@@ -189,6 +189,7 @@ form.addEventListener('submit', (e) => {
     nombre, telefono: `+${telefonoWa}`, personas, dia: fechaStr, turno,
     email_cliente:  email || '—',
     telefono_wa:    telefonoWa,
+    concierge:      esConcierge && nomConcierge ? nomConcierge : '—',
     confirm_url:    email ? `confirmar.html?n=${encodeURIComponent(nombre)}&e=${encodeURIComponent(email)}&p=${encodeURIComponent(personas)}&d=${encodeURIComponent(fechaStr)}&t=${encodeURIComponent(turno)}` : '',
   })
   .then(() => {
@@ -209,6 +210,7 @@ form.addEventListener('submit', (e) => {
         fecha:      dia,
         hora:       turno,
         origen,
+        comentarios: esConcierge && nomConcierge ? `Concierge: ${nomConcierge}` : null,
         confirmada: false
       })
     }).catch(err => console.error('Supabase:', err));
