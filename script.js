@@ -104,8 +104,16 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   avisoEl.classList.add('oculto');
   formEl.classList.remove('oculto');
 
+  const turnoSelect = document.getElementById('turno');
+  const btnReservar = document.querySelector('button[type="submit"]');
+  turnoSelect.disabled = false;
+  btnReservar.disabled = false;
+
   if (esHoy && despuesDe19) {
     avisoTarde.classList.remove('oculto');
+    while (turnoSelect.options.length > 1) turnoSelect.remove(1);
+    turnoSelect.disabled = true;
+    btnReservar.disabled = true;
   } else if (cerrados.includes(fecha)) {
     avisoEl.classList.remove('oculto');
     formEl.classList.add('oculto');
