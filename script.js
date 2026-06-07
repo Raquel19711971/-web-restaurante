@@ -106,7 +106,6 @@ document.getElementById('dia').addEventListener('change', async (e) => {
 
   if (esHoy && despuesDe19) {
     avisoTarde.classList.remove('oculto');
-    formEl.classList.add('oculto');
   } else if (cerrados.includes(fecha)) {
     avisoEl.classList.remove('oculto');
     formEl.classList.add('oculto');
