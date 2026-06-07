@@ -216,6 +216,9 @@ async function confirmarEmail(id) {
 }
 
 function filaPendienteHTML(r) {
+  const btnConfirmar = r.email
+    ? `<button class="btn-email" onclick="confirmarEmail(${r.id})">📧 Confirmar</button>`
+    : `<button class="btn-wa" onclick="confirmarWA(${r.id})">💬 Confirmar</button>`;
   return `
     <tr>
       <td class="td-nombre">${r.nombre}</td>
@@ -224,7 +227,7 @@ function filaPendienteHTML(r) {
       <td class="td-muted" style="white-space:nowrap">${r.dia}</td>
       <td class="td-muted">${r.turno} h</td>
       <td class="col-cancelar">
-        <button class="btn-wa" onclick="confirmarWA(${r.id})">💬 Confirmar</button>
+        ${btnConfirmar}
       </td>
     </tr>`;
 }
