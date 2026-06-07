@@ -103,7 +103,6 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   avisoTarde.classList.add('oculto');
   avisoEl.classList.add('oculto');
   formEl.classList.remove('oculto');
-  document.getElementById('aviso-fecha-inline').classList.add('oculto');
 
   const turnoSelect = document.getElementById('turno');
   const btnReservar = document.querySelector('button[type="submit"]');
@@ -112,7 +111,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
 
   if (esHoy && despuesDe19) {
     avisoTarde.classList.remove('oculto');
-    document.getElementById('aviso-fecha-inline').classList.remove('oculto');
+    avisoTarde.scrollIntoView({ behavior: 'smooth', block: 'center' });
     while (turnoSelect.options.length > 1) turnoSelect.remove(1);
     turnoSelect.disabled = true;
     btnReservar.disabled = true;
