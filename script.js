@@ -196,12 +196,6 @@ form.addEventListener('submit', (e) => {
       })
     }).catch(err => console.error('Supabase:', err));
 
-    // Confirmación automática al cliente si eligió email
-    if (viaConf === 'email' && email) {
-      emailjs.send(EMAILJS_SERVICE_ID, 'template_confirmacion_cl', {
-        nombre, personas, dia: fechaStr, turno, email_cliente: email,
-      });
-    }
 
     resumen.textContent = `${nombre} · ${personas} persona${personas > 1 ? 's' : ''} · ${fechaStr} a las ${turno} h`;
     form.classList.add('oculto');
