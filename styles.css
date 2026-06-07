@@ -213,6 +213,8 @@ select {
 input::placeholder { color: #4a4030; }
 input:focus, select:focus { outline: none; border-color: var(--gold); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
+.hint-fecha { display: none; font-size: 0.75rem; color: #4a4030; margin-top: 0.3rem; }
+@media (max-width: 768px) { .hint-fecha { display: block; } }
 input.invalido, select.invalido { border-color: var(--error); }
 
 /* flecha del select */
@@ -442,6 +444,10 @@ footer .linea-dorada { margin-bottom: 1.5rem; }
 
 @media (max-width: 520px) {
   .tarjeta-form { padding: 1.8rem 1.2rem; }
+  .fila-doble { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (max-width: 768px) {
   .fila-doble { grid-template-columns: 1fr; gap: 0; }
   .grid-galeria {
     grid-template-columns: 1fr;

@@ -88,6 +88,7 @@ document.querySelectorAll('input[name="confirmacion_via"]').forEach(radio => {
 });
 
 document.getElementById('dia').addEventListener('change', async (e) => {
+  document.querySelector('.hint-fecha').style.display = 'none';
   const cerrados = getCierres();
   const avisoEl = document.getElementById('aviso-cierre');
   const formEl  = document.getElementById('formulario');
