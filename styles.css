@@ -1,0 +1,450 @@
+:root {
+  --gold:       #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dark:  #8a6a20;
+  --bg:         #0d0d0d;
+  --bg-card:    #181410;
+  --bg-form:    #1e1a15;
+  --text:       #f0ead8;
+  --text-muted: #9a8f7e;
+  --border:     rgba(201, 168, 76, 0.25);
+  --error:      #e07070;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: auto;
+  background:
+    radial-gradient(ellipse at center, rgba(201,168,76,0.07) 0%, transparent 65%),
+    linear-gradient(160deg, #1c1508 0%, #0d0d0d 45%, #090c0a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  gap: 2.5rem;
+}
+
+.pretitle {
+  font-weight: 300;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+.nombre-restaurante {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 10vw, 6.5rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.05;
+  letter-spacing: 0.05em;
+}
+
+.linea-dorada {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.2rem auto;
+}
+
+.tagline {
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.hero-cta {
+  display: inline-block;
+  padding: 0.85rem 2.5rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+.hero-cta:hover {
+  background: var(--gold);
+  color: #0d0d0d;
+}
+
+/* ── RESERVAS ── */
+.reservas {
+  background: linear-gradient(180deg, #0d0d0d 0%, #111008 50%, #0d0d0d 100%);
+  padding: 7rem 1.5rem;
+}
+
+.container {
+  max-width: 660px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reservas h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.subtitulo {
+  color: var(--text-muted);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+/* ── FORMULARIO ── */
+.tarjeta-form {
+  background: var(--bg-form);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2.8rem;
+  margin-top: 2.8rem;
+  text-align: left;
+  box-shadow: 0 0 80px rgba(201, 168, 76, 0.04);
+}
+
+.campo {
+  margin-bottom: 1.6rem;
+}
+
+.fila-doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+input,
+select {
+  width: 100%;
+  background: #141210;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.opcional { color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: none; font-weight: 400; }
+
+.telefono-fila {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.telefono-fila select {
+  width: auto;
+  flex-shrink: 0;
+  padding-right: 1.8rem;
+}
+
+.telefono-fila input {
+  flex: 1;
+}
+
+.confirmacion-opciones {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.opcion-conf {
+  flex: 1;
+  cursor: pointer;
+}
+
+.opcion-conf input[type="radio"] { display: none; }
+
+.opcion-conf span {
+  display: block;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: #141210;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.opcion-conf input[type="radio"]:checked + span {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+input::placeholder { color: #4a4030; }
+input:focus, select:focus { outline: none; border-color: var(--gold); }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
+input.invalido, select.invalido { border-color: var(--error); }
+
+/* flecha del select */
+.campo:has(select)::after {
+  content: '▾';
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  pointer-events: none;
+  font-size: 0.9rem;
+}
+.campo:has(select) { position: relative; }
+
+select option { background: #1e1a15; }
+
+.error {
+  display: block;
+  color: var(--error);
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+  min-height: 1rem;
+}
+
+.btn-reservar {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 1.1rem;
+  background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+  background-size: 200% auto;
+  color: #0d0d0d;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-position 0.4s ease, transform 0.1s;
+}
+
+.btn-reservar:hover { background-position: right center; }
+.btn-reservar:active { transform: scale(0.99); }
+
+/* ── CONFIRMACIÓN ── */
+.confirmacion {
+  margin-top: 2rem;
+  padding: 3rem 2rem;
+  border: 1px solid var(--border);
+  background: var(--bg-form);
+  text-align: center;
+  box-shadow: 0 0 60px rgba(201,168,76,0.05);
+}
+
+.confirmacion.oculto { display: none; }
+.tarjeta-form.oculto { display: none; }
+
+.icono-check {
+  font-size: 2.8rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+  line-height: 1;
+}
+
+.confirmacion h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.confirmacion p { color: var(--text); margin-bottom: 0.4rem; font-size: 1.05rem; }
+.nota { color: var(--text-muted) !important; font-size: 0.9rem !important; margin-top: 0.8rem; }
+
+/* ── FOOTER ── */
+footer {
+  background: #090909;
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+}
+
+footer .linea-dorada { margin-bottom: 1.5rem; }
+
+/* ── GALERÍA ── */
+.galeria {
+  background: linear-gradient(180deg, #0d0d0d 0%, #100e08 50%, #0d0d0d 100%);
+  padding: 7rem 1.5rem;
+}
+
+.container-wide {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.galeria-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.galeria-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.grid-galeria {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 260px 260px;
+  gap: 10px;
+}
+
+.foto {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Fondos placeholder — reemplaza con background-image: url('foto.jpg') */
+.foto-1 { background: linear-gradient(135deg, #0a1a14 0%, #1a3025 100%); grid-row: span 2; }
+.foto-2 { background: linear-gradient(135deg, #1a0c08 0%, #2e1a12 100%); }
+.foto-3 { background: linear-gradient(135deg, #0f1520 0%, #1a2535 100%); }
+.foto-4 { background: linear-gradient(135deg, #1a1508 0%, #2a2010 100%); }
+.foto-5 { background: linear-gradient(135deg, #180a18 0%, #2a1228 100%); }
+.foto-6 { background: linear-gradient(135deg, #051a10 0%, #0d2e1c 100%); }
+
+.foto-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.2rem 1.4rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.foto:hover .foto-overlay { opacity: 1; }
+
+.foto-overlay span {
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── UBICACIÓN ── */
+.ubicacion {
+  background: #0a0a0a;
+  padding: 7rem 1.5rem 0;
+}
+
+.ubicacion .container {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.ubicacion h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.ubicacion-dir {
+  color: var(--text-muted);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+}
+
+.mapa-wrapper {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  filter: grayscale(30%) brightness(0.85) contrast(1.05);
+}
+
+/* ── AVISO CIERRE ── */
+.aviso-cierre {
+  margin-top: 2.8rem;
+  padding: 3rem 2rem;
+  border: 1px solid var(--border);
+  background: var(--bg-form);
+  text-align: center;
+}
+
+.aviso-cierre.oculto { display: none; }
+
+.aviso-cierre p:first-child {
+  color: var(--gold);
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.aviso-cierre h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem;
+  color: var(--text);
+  margin-bottom: 0.8rem;
+}
+
+.aviso-cierre p:last-child {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .grid-galeria {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 200px 200px 200px;
+  }
+  .foto-1 { grid-row: span 1; }
+}
+
+@media (max-width: 520px) {
+  .tarjeta-form { padding: 1.8rem 1.2rem; }
+  .fila-doble { grid-template-columns: 1fr; gap: 0; }
+  .grid-galeria {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 200px);
+  }
+}

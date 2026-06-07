@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAI BAI — Informe de Reservas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <meta name="theme-color" content="#C9A84C" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bai Bai" />
+  <style>
+    :root {
+      --gold:      #C9A84C;
+      --gold-dark: #8a6a20;
+      --bg:        #0d0d0d;
+      --bg-card:   #1a1710;
+      --bg-input:  #141210;
+      --text:      #f0ead8;
+      --muted:     #9a8f7e;
+      --border:    rgba(201,168,76,0.25);
+      --error:     #e07070;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      min-height: 100vh;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    /* ── CABECERA ── */
+    header {
+      background: linear-gradient(160deg, #1c1508 0%, #0d0d0d 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-titulo h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+    }
+
+    .header-titulo p {
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .header-acciones {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input[type="date"] {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-size: 1.15rem;
+      font-variant-numeric: lining-nums tabular-nums;
+      padding: 0.7rem 1.2rem;
+    }
+
+    input[type="date"]:focus { outline: none; border-color: var(--gold); }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
+    input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
+
+    .btn {
+      padding: 0.6rem 1.4rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .btn-imprimir {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #0d0d0d;
+    }
+
+    .btn-volver {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    /* ── CONTENIDO ── */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* ── RESUMEN ── */
+    .resumen-dia {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.2rem 2rem;
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ── TURNO ── */
+    .turno-bloque {
+      margin-bottom: 2.5rem;
+    }
+
+    .turno-titulo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .turno-titulo h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+    }
+
+    .turno-titulo .linea {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .badge-completo {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      color: var(--error);
+      border: 1px solid rgba(224,112,112,0.4);
+      padding: 0.15rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    .btn-toggle-turno {
+      background: rgba(224,112,112,0.1);
+      border: 1px solid rgba(224,112,112,0.3);
+      color: var(--error);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-toggle-turno.es-completo {
+      background: rgba(201,168,76,0.08);
+      border-color: rgba(201,168,76,0.3);
+      color: var(--gold);
+    }
+
+    .btn-toggle-turno:hover { opacity: 0.8; }
+
+    .turno-vacio {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 1rem 0.5rem;
+      font-style: italic;
+    }
+
+    .turno-titulo .badge {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── TABLA ── */
+    .tabla-reservas {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0.5rem;
+      table-layout: fixed;
+    }
+
+    .tabla-reservas .td-nombre   { width: 18%; }
+    .tabla-reservas .td-telefono { width: 14%; }
+    .tabla-reservas .td-personas { width: 6%; }
+    .tabla-reservas .col-print-hide { width: 8%; }
+    .tabla-reservas .col-cancelar   { width: 10%; }
+
+    .tabla-reservas thead tr {
+      border-bottom: 1px solid var(--gold);
+    }
+
+    .tabla-reservas th {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      padding: 0.6rem 1rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .tabla-reservas tbody tr {
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      transition: background 0.15s;
+    }
+
+    .tabla-reservas tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+    .tabla-reservas td {
+      padding: 0.9rem 1rem;
+      font-size: 0.95rem;
+      vertical-align: middle;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .tabla-reservas .td-nombre {
+      font-family: 'Raleway', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .td-muted { color: var(--muted); white-space: nowrap; }
+
+    .td-telefono {
+      color: rgba(201,168,76,0.45);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    .tabla-reservas .td-personas {
+      text-align: center;
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .td-input input,
+    .td-input textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.45rem 0.7rem;
+      width: 100%;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+
+    .td-input input { width: 80px; font-size: 20px; font-weight: 600; font-family: 'Raleway', sans-serif; font-variant-numeric: lining-nums tabular-nums; }
+    .td-input input.input-personas { width: 55px; text-align: center; }
+    .td-input textarea { min-height: 52px; min-width: 0; width: 100%; }
+
+    .td-input input:focus,
+    .td-input textarea:focus { outline: none; border-color: var(--gold); }
+
+    .btn-cancelar {
+      background: transparent;
+      border: 1px solid rgba(224,112,112,0.3);
+      color: var(--error);
+      border-radius: 2px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+
+    .btn-cancelar:hover { background: rgba(224,112,112,0.15); }
+
+    .btn-wa {
+      display: block;
+      background: #25D366;
+      border: none;
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-bottom: 0.35rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-wa:hover { opacity: 0.82; }
+
+    .btn-wa-interno {
+      display: block;
+      background: #128C7E;
+      border: none;
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-bottom: 0.35rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-wa-interno:hover { opacity: 0.82; }
+
+    .btn-email {
+      display: block;
+      background: #2563eb;
+      border: none;
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-bottom: 0.35rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-email:hover { opacity: 0.82; }
+
+    .tick-confirmada {
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #25D366;
+      margin-bottom: 0.35rem;
+    }
+
+    .fila-confirmada td { opacity: 0.55; }
+    .fila-confirmada .col-cancelar { opacity: 1; }
+
+    .tag-origen {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
+
+    /* ── VACÍO ── */
+    .sin-reservas {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .sin-reservas p:first-child {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── CIERRES ── */
+    .cierres-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.4rem 1.8rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .cierres-panel h3 {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .cierres-lista {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .cierre-tag {
+      background: rgba(224,112,112,0.1);
+      border: 1px solid rgba(224,112,112,0.3);
+      color: var(--error);
+      font-size: 0.82rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .cierre-tag button {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .cierre-tag button:hover { opacity: 1; }
+
+    .cierres-añadir {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .cierres-añadir input[type="date"] {
+      font-size: 0.9rem;
+      padding: 0.45rem 0.8rem;
+    }
+
+    .btn-cerrar-dia {
+      background: rgba(224,112,112,0.15);
+      border: 1px solid rgba(224,112,112,0.35);
+      color: var(--error);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-cerrar-dia:hover { background: rgba(224,112,112,0.28); }
+
+    /* ── TABS ── */
+    .tab-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #0d0d0d;
+    }
+
+    .badge-tab {
+      background: var(--error);
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 0.1rem 0.45rem;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+    }
+
+    /* ── CALENDARIO ── */
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .cal-nav h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 1.6rem;
+      min-width: 240px;
+      text-align: center;
+    }
+
+    .cal-nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--gold);
+      width: 38px;
+      height: 38px;
+      border-radius: 2px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cal-nav-btn:hover { background: rgba(201,168,76,0.12); }
+
+    .cal-totales-mes {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      align-items: baseline;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .cal-totales-mes strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .cal-sep { color: var(--border); }
+
+    .cal-leyenda {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .leyenda-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .leyenda-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .ld-vacio    { background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+    .ld-tranquilo{ background: rgba(60,140,80,0.35); }
+    .ld-moderado { background: rgba(201,168,76,0.45); }
+    .ld-ocupado  { background: rgba(210,90,50,0.45); }
+    .ld-cerrado  { background: rgba(224,112,112,0.3); }
+
+    #cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+
+    .cal-dia-nombre {
+      text-align: center;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.5rem 0 0.6rem;
+    }
+
+    .cal-celda {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.7rem;
+      min-height: 80px;
+      cursor: pointer;
+      transition: border-color 0.18s, transform 0.1s;
+    }
+
+    .cal-celda:hover { border-color: var(--gold); transform: translateY(-1px); }
+
+    .cal-celda.vacio {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+      min-height: 0;
+    }
+    .cal-celda.vacio:hover { transform: none; border-color: transparent; }
+
+    .cal-celda.sin-reservas { background: rgba(255,255,255,0.02); }
+
+    .cal-celda.tranquilo {
+      background: rgba(60,140,80,0.1);
+      border-color: rgba(60,140,80,0.3);
+    }
+
+    .cal-celda.moderado {
+      background: rgba(201,168,76,0.1);
+      border-color: rgba(201,168,76,0.35);
+    }
+
+    .cal-celda.ocupado {
+      background: rgba(210,90,50,0.12);
+      border-color: rgba(210,90,50,0.4);
+    }
+
+    .cal-celda.cerrado {
+      background: rgba(224,112,112,0.07);
+      border-color: rgba(224,112,112,0.25);
+      cursor: default;
+    }
+    .cal-celda.cerrado:hover { transform: none; border-color: rgba(224,112,112,0.25); }
+
+    .cal-celda.hoy { box-shadow: inset 0 0 0 1px var(--gold); }
+    .cal-celda.hoy .cal-num { color: var(--gold); }
+
+    .cal-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.45rem;
+    }
+
+    .cal-dato {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .cal-dato strong { color: var(--text); font-weight: 600; }
+
+    .cal-cerrado-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--error);
+      opacity: 0.65;
+      margin-top: 0.3rem;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+
+      body { background: #fff; color: #000; font-size: 14px; line-height: 1.3; width: 186mm; min-width: 186mm; }
+
+      header { background: #fff; border-bottom: 2px solid #C9A84C; padding: 6mm 0 4mm; }
+      .header-titulo h1 { color: #8a6a20; font-size: 1.3rem; }
+      .header-titulo p  { font-size: 0.75rem; color: #666; }
+
+      .header-acciones, .btn-imprimir, .btn-volver,
+      .col-cancelar, .col-print-hide,
+      .cierres-panel, .btn-toggle-turno,
+      .badge-completo, .resumen-dia, .panel-manual,
+      .header-titulo p, .turno-vacio { display: none !important; }
+
+      main { padding: 4mm 0 0; }
+
+      .turno-bloque { margin-bottom: 7mm; break-inside: avoid; }
+      .turno-titulo { margin-bottom: 2mm; }
+      .turno-titulo h2 { color: #8a6a20; font-size: 1.1rem; }
+      .turno-titulo .badge { font-size: 0.7rem; color: #666; }
+      .turno-titulo .linea { background: #C9A84C; }
+
+      .tabla-reservas { width: 100%; border-collapse: collapse; table-layout: fixed; }
+      .tabla-reservas thead tr { border-bottom: 1.5px solid #C9A84C; }
+      .tabla-reservas th { color: #8a6a20; font-size: 0.7rem; padding: 3px 8px; letter-spacing: 0.15em; }
+      .tabla-reservas tbody tr { border-bottom: 1px solid #ddd; }
+      .tabla-reservas td { font-size: 14px; padding: 5px 8px; color: #000; vertical-align: middle; overflow: hidden; }
+
+      .tabla-reservas .td-nombre   { width: 22%; font-size: 16px !important; font-weight: 700 !important; color: #000 !important; white-space: normal !important; word-break: normal; overflow-wrap: break-word; }
+      .tabla-reservas .td-telefono { width: 18%; font-size: 13px !important; font-weight: 400 !important; color: #666 !important; }
+      .tabla-reservas .td-personas { width: 8%;  font-size: 16px !important; font-weight: 700 !important; color: #000 !important; text-align: center; }
+      .td-input:has(input)         { width: 10%; }
+      .td-input:has(textarea)      { width: 42%; }
+
+      .td-input input    { background: #fff; border: 1px solid #bbb; color: #000; font-size: 14px; font-weight: 600; width: 55px; padding: 2px 4px; }
+      .td-input textarea { background: transparent; border: none !important; color: #000; font-size: 12px; min-height: unset; height: 18px; width: 100%; resize: none; padding: 0 2px; box-shadow: none; }
+
+      .fila-confirmada td { opacity: 1; }
+      .td-input textarea::placeholder,
+      .td-input input::placeholder { color: transparent; }
+
+      .tag-origen {
+        display: inline-block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: #8a6a20;
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin-bottom: 2px;
+      }
+      .print-fecha {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: #8a6a20;
+        margin-left: 0.6rem;
+      }
+    }
+
+    .print-fecha { display: none; }
+    @media print { .print-fecha { display: inline; } }
+
+    /* ── ENTRADA MANUAL ── */
+    .panel-manual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .panel-manual-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .panel-manual-header h3 {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .panel-manual-header .toggle-arrow {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-left: auto;
+      transition: transform 0.2s;
+    }
+
+    .panel-manual-header.abierto .toggle-arrow { transform: rotate(180deg); }
+
+    .panel-manual-form {
+      display: none;
+      margin-top: 1.2rem;
+      display: none;
+    }
+
+    .panel-manual-form.visible { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+    .panel-manual-form label {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .panel-manual-form input,
+    .panel-manual-form select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.55rem 0.8rem;
+    }
+
+    .panel-manual-form input:focus,
+    .panel-manual-form select:focus { outline: none; border-color: var(--gold); }
+
+    .origen-opciones {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .origen-opt {
+      cursor: pointer;
+    }
+
+    .origen-opt input[type="radio"] { display: none; }
+
+    .origen-opt span {
+      display: block;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--bg-input);
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+
+    .origen-opt input[type="radio"]:checked + span {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201,168,76,0.07);
+    }
+
+    .panel-manual-form .campo-full { grid-column: 1 / -1; }
+
+    .btn-añadir-reserva {
+      grid-column: 1 / -1;
+      padding: 0.7rem;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #0d0d0d;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-añadir-reserva:hover { opacity: 0.85; }
+
+    @media (max-width: 600px) {
+      header { padding: 1.5rem; }
+      .tabla-reservas { font-size: 0.85rem; }
+      .td-input textarea { min-width: 120px; }
+      .panel-manual-form.visible { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="pantalla-login" style="
+    position:fixed;inset:0;z-index:9999;
+    background:#0d0d0d;
+    display:flex;align-items:center;justify-content:center;
+  ">
+    <div style="text-align:center;width:100%;max-width:340px;padding:2rem;">
+      <p style="font-family:'Playfair Display',serif;font-size:2rem;color:#C9A84C;margin-bottom:0.3rem;">BAI BAI</p>
+      <p style="font-size:0.72rem;letter-spacing:0.25em;text-transform:uppercase;color:#9a8f7e;margin-bottom:2.5rem;">Panel de administración</p>
+      <input type="password" id="input-password" placeholder="Contraseña" style="
+        width:100%;background:#141210;border:1px solid rgba(201,168,76,0.25);
+        border-radius:2px;color:#f0ead8;font-family:'Raleway',sans-serif;
+        font-size:1rem;padding:0.8rem 1.2rem;margin-bottom:1rem;box-sizing:border-box;
+      " />
+      <button onclick="comprobarPassword()" style="
+        width:100%;padding:0.8rem;
+        background:linear-gradient(135deg,#8a6a20,#C9A84C);
+        color:#0d0d0d;font-family:'Raleway',sans-serif;font-size:0.75rem;
+        font-weight:700;letter-spacing:0.25em;text-transform:uppercase;
+        border:none;border-radius:2px;cursor:pointer;
+      ">Entrar</button>
+      <p id="error-login" style="color:#e07070;font-size:0.82rem;margin-top:0.8rem;display:none;">Contraseña incorrecta</p>
+    </div>
+  </div>
+
+  <div id="contenido-admin" style="display:none;">
+  <header>
+    <div class="header-titulo">
+      <h1>BAI BAI — Reservas <span id="print-fecha" class="print-fecha"></span></h1>
+      <p>Informe diario · Puerto de Ibiza</p>
+    </div>
+    <div class="header-acciones">
+      <input type="date" id="filtro-fecha" />
+      <button class="btn btn-imprimir" onclick="window.print()">Imprimir informe</button>
+      <button class="btn btn-volver" id="btn-actualizar" onclick="renderizar()" style="cursor:pointer;">↺ Actualizar</button>
+      <a href="index.html" class="btn-volver">← Web</a>
+      <div class="tab-toggle">
+        <button class="tab-btn active" id="tab-diario">Diario</button>
+        <button class="tab-btn" id="tab-mensual">Mensual</button>
+        <button class="tab-btn" id="tab-pendientes">Pendientes <span id="badge-pendientes" class="badge-tab" style="display:none"></span></button>
+        <button class="tab-btn" id="tab-stats">Estadísticas</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="vista-diaria">
+    <div class="resumen-dia">
+      <div class="stat">
+        <div class="stat-num" id="total-reservas">0</div>
+        <div class="stat-label">Reservas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="total-personas">0</div>
+        <div class="stat-label">Personas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="total-confirmadas" style="color:#25D366;">0</div>
+        <div class="stat-label">Confirmadas</div>
+      </div>
+    </div>
+
+    <div class="cierres-panel">
+      <h3>Horarios de cena</h3>
+      <div class="cierres-lista" id="turnos-lista"></div>
+      <div class="cierres-añadir">
+        <input type="time" id="turno-nuevo" />
+        <button class="btn btn-imprimir" id="btn-add-turno" style="background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#0d0d0d;">Añadir turno</button>
+      </div>
+    </div>
+
+    <div class="cierres-panel">
+      <h3>Días cerrados</h3>
+      <div class="cierres-lista" id="cierres-lista"></div>
+      <div class="cierres-añadir">
+        <input type="date" id="cierre-fecha" />
+        <button class="btn-cerrar-dia" id="btn-add-cierre">Cerrar día</button>
+      </div>
+    </div>
+
+    <!-- ENTRADA MANUAL -->
+    <div class="panel-manual">
+      <div class="panel-manual-header" id="toggle-manual">
+        <h3>+ Añadir reserva manualmente</h3>
+        <span class="toggle-arrow">▾</span>
+      </div>
+      <div class="panel-manual-form" id="form-manual">
+        <div>
+          <label>Nombre</label>
+          <input type="text" id="m-nombre" placeholder="Nombre del cliente" />
+        </div>
+        <div>
+          <label>Personas</label>
+          <input type="number" id="m-personas" min="1" max="70" placeholder="1 – 70" />
+        </div>
+        <div>
+          <label>Origen y teléfono</label>
+          <div class="origen-opciones">
+            <label class="origen-opt">
+              <input type="radio" name="m-origen" value="telefono" checked />
+              <span>📞 Teléfono</span>
+            </label>
+            <label class="origen-opt">
+              <input type="radio" name="m-origen" value="instagram" />
+              <span>📷 Instagram</span>
+            </label>
+            <label class="origen-opt">
+              <input type="radio" name="m-origen" value="presencial" />
+              <span>🚶 Presencial</span>
+            </label>
+            <label class="origen-opt">
+              <input type="radio" name="m-origen" value="concierge" />
+              <span>🎩 Concierge</span>
+            </label>
+          </div>
+        </div>
+        <div id="m-campo-tel">
+          <label>Teléfono</label>
+          <input type="tel" id="m-telefono" placeholder="+34 600 000 000" />
+        </div>
+        <div id="m-campo-concierge" style="display:none">
+          <label>Nombre del concierge</label>
+          <input type="text" id="m-concierge" list="concierges-lista" placeholder="Nombre del concierge" autocomplete="off" />
+          <datalist id="concierges-lista"></datalist>
+        </div>
+        <div>
+          <label>Turno</label>
+          <select id="m-turno"><option value="">Selecciona turno</option></select>
+        </div>
+        <div>
+          <label>Fecha</label>
+          <input type="date" id="m-fecha" />
+        </div>
+        <button class="btn-añadir-reserva" id="btn-añadir-manual">Añadir reserva</button>
+      </div>
+    </div>
+
+    <div id="contenido-informe"></div>
+    </div><!-- /vista-diaria -->
+
+    <div id="vista-mensual" style="display:none">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="cal-prev">&#8592;</button>
+        <h2 id="cal-titulo"></h2>
+        <button class="cal-nav-btn" id="cal-next">&#8594;</button>
+      </div>
+      <div class="cal-totales-mes">
+        <span id="cal-total-reservas"></span>
+        <span class="cal-sep">&nbsp;·&nbsp;</span>
+        <span id="cal-total-personas"></span>
+      </div>
+      <div class="cal-leyenda">
+        <span class="leyenda-item"><span class="leyenda-dot ld-vacio"></span>Sin reservas</span>
+        <span class="leyenda-item"><span class="leyenda-dot ld-tranquilo"></span>Tranquilo (1–25 p.)</span>
+        <span class="leyenda-item"><span class="leyenda-dot ld-moderado"></span>Moderado (26–60 p.)</span>
+        <span class="leyenda-item"><span class="leyenda-dot ld-ocupado"></span>Lleno (61+ p.)</span>
+        <span class="leyenda-item"><span class="leyenda-dot ld-cerrado"></span>Cerrado</span>
+      </div>
+      <div id="cal-grid"></div>
+    </div><!-- /vista-mensual -->
+
+    <div id="vista-pendientes" style="display:none">
+      <div id="contenido-pendientes"></div>
+    </div><!-- /vista-pendientes -->
+
+    <div id="vista-stats" style="display:none">
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem;">
+        <div>
+          <label style="font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:600;display:block;margin-bottom:0.3rem;">Desde</label>
+          <input type="date" id="stats-desde" />
+        </div>
+        <div>
+          <label style="font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:600;display:block;margin-bottom:0.3rem;">Hasta</label>
+          <input type="date" id="stats-hasta" />
+        </div>
+        <button class="btn btn-imprimir" id="btn-calcular-stats" style="margin-top:1.4rem;">Ver estadísticas</button>
+      </div>
+      <div id="contenido-stats"></div>
+    </div><!-- /vista-stats -->
+  </main>
+
+  </div><!-- /contenido-admin -->
+
+  <script>
+    const PASSWORD = 'losvascos2026';
+
+    function entrar() {
+      document.getElementById('pantalla-login').style.display = 'none';
+      document.getElementById('contenido-admin').style.display = '';
+    }
+
+    function comprobarPassword() {
+      const val = document.getElementById('input-password').value;
+      if (val === PASSWORD) {
+        localStorage.setItem('baibai_pwd', PASSWORD);
+        entrar();
+      } else {
+        document.getElementById('error-login').style.display = 'block';
+      }
+    }
+
+    document.getElementById('input-password').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') comprobarPassword();
+    });
+
+    if (localStorage.getItem('baibai_pwd') === PASSWORD) {
+      entrar();
+    }
+  </script>
+  <script src="admin.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "Bai Bai Reservas",
+  "short_name": "Bai Bai",
+  "description": "Gestión de reservas · Bai Bai Ibiza",
+  "start_url": "/admin.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d0d",
+  "theme_color": "#C9A84C",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

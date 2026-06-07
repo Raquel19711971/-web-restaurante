@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAI BAI — Reservas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <p class="pretitle">Bienvenidos a</p>
+      <h1 class="nombre-restaurante">BAI BAI</h1>
+      <div class="linea-dorada"></div>
+      <p class="tagline">Puerto de Ibiza &nbsp;·&nbsp; Plaza Sa Riba, 9</p>
+    </div>
+  </header>
+
+  <!-- RESERVAS -->
+  <section class="reservas" id="reservas">
+    <div class="container">
+      <h2>Reserva tu mesa</h2>
+      <p class="subtitulo" id="subtitulo-turnos">Servicio de cena</p>
+      <div class="linea-dorada"></div>
+
+      <div id="aviso-tarde" class="aviso-cierre oculto">
+        <p>✦</p>
+        <h3>Reservas por teléfono</h3>
+        <p>Para reservas de hoy a partir de las 19:00 h, llámanos directamente.</p>
+      </div>
+
+      <div id="aviso-cierre" class="aviso-cierre oculto">
+        <p>✦</p>
+        <h3>Hoy no se hacen reservas</h3>
+        <p>Disculpa las molestias. Puedes contactarnos para más información.</p>
+      </div>
+
+      <form id="formulario" class="tarjeta-form" novalidate>
+
+        <div class="campo">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+          <span class="error" id="err-nombre"></span>
+        </div>
+
+        <div class="campo">
+          <label for="telefono">Teléfono</label>
+          <div class="telefono-fila">
+            <select id="prefijo" name="prefijo">
+              <option value="34">🇪🇸 +34</option>
+              <option value="44">🇬🇧 +44</option>
+              <option value="1">🇺🇸 +1</option>
+              <option value="49">🇩🇪 +49</option>
+              <option value="33">🇫🇷 +33</option>
+              <option value="39">🇮🇹 +39</option>
+              <option value="31">🇳🇱 +31</option>
+              <option value="46">🇸🇪 +46</option>
+              <option value="41">🇨🇭 +41</option>
+              <option value="32">🇧🇪 +32</option>
+              <option value="43">🇦🇹 +43</option>
+            </select>
+            <input type="tel" id="telefono" name="telefono" placeholder="600 000 000" required />
+          </div>
+          <span class="error" id="err-telefono"></span>
+        </div>
+
+        <div class="campo">
+          <label>¿Cómo quieres recibir la confirmación?</label>
+          <div class="confirmacion-opciones">
+            <label class="opcion-conf">
+              <input type="radio" name="confirmacion_via" value="whatsapp" checked />
+              <span>💬 WhatsApp</span>
+            </label>
+            <label class="opcion-conf">
+              <input type="radio" name="confirmacion_via" value="email" />
+              <span>✉️ Email</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="campo" id="campo-email" style="display:none;">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" />
+          <span class="error" id="err-email"></span>
+        </div>
+
+        <div class="fila-doble">
+          <div class="campo">
+            <label for="personas">Número de personas</label>
+            <input type="number" id="personas" name="personas" min="1" max="90" placeholder="1 – 90" required />
+            <span class="error" id="err-personas"></span>
+          </div>
+          <div class="campo">
+            <label for="dia">Fecha</label>
+            <input type="date" id="dia" name="dia" required />
+            <span class="error" id="err-dia"></span>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="turno">Turno</label>
+          <select id="turno" name="turno" required>
+            <option value="">Selecciona un turno</option>
+          </select>
+          <span class="error" id="err-turno"></span>
+        </div>
+
+        <button type="submit" class="btn-reservar">Solicitar reserva</button>
+
+      </form>
+
+      <div id="confirmacion" class="confirmacion oculto">
+        <div class="icono-check">✓</div>
+        <h3>¡Reserva recibida!</h3>
+        <p id="resumen"></p>
+        <p class="nota">Nos pondremos en contacto contigo para confirmarla.</p>
+        <button id="btn-nueva-reserva" class="btn-reservar" style="margin-top:1.8rem;">Nueva reserva</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- UBICACIÓN -->
+  <section class="ubicacion" id="ubicacion">
+    <div class="container">
+      <h2>Dónde estamos</h2>
+      <div class="linea-dorada"></div>
+      <p class="ubicacion-dir">Plaza Sa Riba, 9 &nbsp;·&nbsp; Puerto de Ibiza</p>
+    </div>
+    <div class="mapa-wrapper">
+      <iframe
+        src="https://www.google.com/maps?q=Plaza+Sa+Riba+9,+Puerto+de+Ibiza,+España&output=embed&z=17"
+        width="100%"
+        height="420"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación BAI BAI — Plaza Sa Riba 9, Ibiza">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="linea-dorada"></div>
+    <p>© 2025 BAI BAI &nbsp;·&nbsp; Todos los derechos reservados</p>
+    <p style="margin-top:0.8rem;"><a href="admin.html" style="color:rgba(201,168,76,0.35);font-size:0.75rem;letter-spacing:0.15em;text-decoration:none;">Área de gestión</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

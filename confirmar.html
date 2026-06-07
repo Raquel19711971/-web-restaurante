@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAI BAI — Confirmación de reserva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #f0ead8;
+      font-family: 'Raleway', sans-serif;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .tarjeta {
+      background: #1e1a15;
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 3rem 2.5rem;
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .icono { font-size: 2.5rem; margin-bottom: 1rem; }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #C9A84C;
+      margin-bottom: 0.8rem;
+    }
+
+    .datos {
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      color: #9a8f7e;
+      line-height: 2;
+    }
+
+    .datos strong { color: #f0ead8; }
+
+    .linea {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+      margin: 1.2rem auto;
+    }
+
+    .nota {
+      font-size: 0.85rem;
+      color: #5a5040;
+    }
+  </style>
+</head>
+<body>
+  <div class="tarjeta">
+    <div class="icono" id="icono">⏳</div>
+    <h1 id="titulo">Enviando confirmación…</h1>
+    <div class="linea"></div>
+    <div class="datos" id="datos"></div>
+    <p class="nota" id="nota"></p>
+  </div>
+
+  <script>
+    const EMAILJS_PUBLIC_KEY  = '93AVZmo6iBz2c1fmD';
+    const EMAILJS_SERVICE_ID  = 'service_h3pvqic';
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    const p      = new URLSearchParams(window.location.search);
+    const nombre  = p.get('n') || '';
+    const email   = p.get('e') || '';
+    const personas = p.get('p') || '';
+    const dia     = p.get('d') || '';
+    const turno   = p.get('t') || '';
+
+    if (!nombre || !email) {
+      document.getElementById('icono').textContent = '✕';
+      document.getElementById('titulo').textContent = 'Enlace no válido';
+      document.getElementById('nota').textContent = 'Este enlace de confirmación no contiene los datos necesarios.';
+    } else {
+      emailjs.send(EMAILJS_SERVICE_ID, 'template_confirmacion_cliente', {
+        nombre, email_cliente: email, personas, dia, turno,
+      })
+      .then(() => {
+        document.getElementById('icono').textContent = '✓';
+        document.getElementById('titulo').textContent = 'Confirmación enviada';
+        document.getElementById('datos').innerHTML =
+          `<strong>${nombre}</strong><br>${personas} persona${personas > 1 ? 's' : ''}<br>${dia}<br>a las ${turno} h`;
+        document.getElementById('nota').textContent = 'El cliente ha recibido su confirmación por email.';
+      })
+      .catch(() => {
+        document.getElementById('icono').textContent = '⚠️';
+        document.getElementById('titulo').textContent = 'Error al enviar';
+        document.getElementById('nota').textContent = 'No se pudo enviar la confirmación. Inténtalo de nuevo o confirma por WhatsApp.';
+      });
+    }
+  </script>
+</body>
+</html>
