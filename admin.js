@@ -196,7 +196,7 @@ async function confirmarEmail(id) {
   if (!r || !r.email) return;
   try {
     emailjs.init('93AVZmo6iBz2c1fmD');
-    await emailjs.send('service_h3pvqic', 'template_confirmacion_cliente', {
+    await emailjs.send('service_h3pvqic', 'template_confirmacion_cl', {
       nombre:        r.nombre,
       email_cliente: r.email,
       personas:      r.personas,

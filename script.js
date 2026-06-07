@@ -198,7 +198,7 @@ form.addEventListener('submit', (e) => {
 
     // Confirmación automática al cliente si eligió email
     if (viaConf === 'email' && email) {
-      emailjs.send(EMAILJS_SERVICE_ID, 'template_confirmacion_cliente', {
+      emailjs.send(EMAILJS_SERVICE_ID, 'template_confirmacion_cl', {
         nombre, personas, dia: fechaStr, turno, email_cliente: email,
       });
     }
