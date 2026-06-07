@@ -87,6 +87,11 @@ document.querySelectorAll('input[name="confirmacion_via"]').forEach(radio => {
   });
 });
 
+document.getElementById('es-concierge').addEventListener('change', (e) => {
+  document.getElementById('campo-nombre-concierge').style.display = e.target.checked ? 'block' : 'none';
+  if (!e.target.checked) document.getElementById('nombre-concierge').value = '';
+});
+
 document.getElementById('dia').addEventListener('change', async (e) => {
   document.querySelector('.hint-fecha').style.display = 'none';
   const cerrados = getCierres();
@@ -159,14 +164,17 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (!validar()) return;
 
-  const nombre   = document.getElementById('nombre').value.trim();
-  const prefijo  = document.getElementById('prefijo').value;
-  const telefono = document.getElementById('telefono').value.trim();
-  const personas = document.getElementById('personas').value;
-  const dia      = document.getElementById('dia').value;
-  const turno    = document.getElementById('turno').value;
-  const viaConf  = document.querySelector('input[name="confirmacion_via"]:checked').value;
-  const email    = document.getElementById('email').value.trim();
+  const nombre       = document.getElementById('nombre').value.trim();
+  const prefijo      = document.getElementById('prefijo').value;
+  const telefono     = document.getElementById('telefono').value.trim();
+  const personas     = document.getElementById('personas').value;
+  const dia          = document.getElementById('dia').value;
+  const turno        = document.getElementById('turno').value;
+  const viaConf      = document.querySelector('input[name="confirmacion_via"]:checked').value;
+  const email        = document.getElementById('email').value.trim();
+  const esConcierge  = document.getElementById('es-concierge').checked;
+  const nomConcierge = document.getElementById('nombre-concierge').value.trim();
+  const origen       = esConcierge && nomConcierge ? `concierge: ${nomConcierge}` : 'web';
 
   const fecha    = new Date(dia + 'T00:00:00');
   const fechaStr = fecha.toLocaleDateString('es-ES', {
@@ -200,7 +208,7 @@ form.addEventListener('submit', (e) => {
         personas:   parseInt(personas),
         fecha:      dia,
         hora:       turno,
-        origen:     'web',
+        origen,
         confirmada: false
       })
     }).catch(err => console.error('Supabase:', err));
