@@ -111,6 +111,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
 
   if (esHoy && despuesDe19) {
     avisoTarde.classList.remove('oculto');
+    avisoTarde.scrollIntoView({ behavior: 'smooth', block: 'center' });
     while (turnoSelect.options.length > 1) turnoSelect.remove(1);
     turnoSelect.disabled = true;
     btnReservar.disabled = true;
