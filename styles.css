@@ -215,6 +215,8 @@ input:focus, select:focus { outline: none; border-color: var(--gold); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg); cursor: pointer; }
 .hint-fecha { display: none; font-size: 0.75rem; color: #4a4030; margin-top: 0.3rem; }
 @media (max-width: 768px) { .hint-fecha { display: block; } }
+.aviso-fecha-inline { display: block; font-size: 0.82rem; color: var(--gold); margin-top: 0.4rem; }
+.aviso-fecha-inline a { color: var(--gold); }
 input.invalido, select.invalido { border-color: var(--error); }
 
 /* flecha del select */
