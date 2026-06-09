@@ -212,6 +212,7 @@ async function confirmarEmail(id) {
       : r.dia;
     const labels = r.idioma === 'en'
       ? {
+          lbl_asunto:    'Reservation Confirmed! – BAI BAI',
           lbl_titulo:    'Reservation Confirmed!',
           lbl_nombre:    'Name',
           lbl_personas:  'Guests',
@@ -222,6 +223,7 @@ async function confirmarEmail(id) {
           lbl_despedida: 'We look forward to welcoming you, see you soon!',
         }
       : {
+          lbl_asunto:    '¡Reserva Confirmada! – BAI BAI',
           lbl_titulo:    '¡Reserva Confirmada!',
           lbl_nombre:    'Nombre',
           lbl_personas:  'Personas',
