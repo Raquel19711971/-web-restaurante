@@ -1,3 +1,140 @@
+// ── TRADUCCIONES ─────────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  es: {
+    'pretitle':           'Bienvenidos a',
+    'reserva-titulo':     'Reserva tu mesa',
+    'aviso-tarde-h3':     'Reservas por teléfono',
+    'aviso-tarde-p':      'Para reservas de hoy a partir de las 19:00 h, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
+    'aviso-cierre-h3':    'Hoy no se hacen reservas',
+    'aviso-cierre-p':     'Disculpa las molestias. Puedes contactarnos para más información.',
+    'label-nombre':       'Nombre completo',
+    'placeholder-nombre': 'Tu nombre',
+    'label-telefono':     'Teléfono',
+    'label-confirmacion': '¿Cómo quieres recibir la confirmación?',
+    'label-email':        'Email',
+    'placeholder-email':  'tu@email.com',
+    'label-personas':     'Número de personas',
+    'label-fecha':        'Fecha',
+    'hint-fecha':         '📅 Toca para elegir el día',
+    'label-turno':        'Turno',
+    'turno-default':      'Selecciona un turno',
+    'label-concierge':    '🎩 Soy concierge / agencia',
+    'label-nombre-concierge': 'Nombre / Hotel',
+    'placeholder-concierge':  'Ej: Hotel Ibiza Gran Hotel',
+    'btn-reservar':       'Solicitar reserva',
+    'confirmacion-h3':    '¡Reserva recibida!',
+    'confirmacion-nota':  'Nos pondremos en contacto contigo para confirmarla.',
+    'btn-nueva':          'Nueva reserva',
+    'ubicacion-h2':       'Dónde estamos',
+    'footer-copy':        '© 2025 BAI BAI  ·  Todos los derechos reservados',
+    'footer-admin':       'Área de gestión',
+    'err-nombre':         'Introduce tu nombre.',
+    'err-telefono':       'Introduce un teléfono válido.',
+    'err-personas':       'Entre 1 y 90 personas.',
+    'err-dia':            'Selecciona una fecha.',
+    'err-turno':          'Selecciona un turno.',
+    'err-email-req':      'Introduce tu email.',
+    'err-email-inv':      'Email no válido.',
+    'enviando':           'Enviando…',
+    'completo':           'COMPLETO',
+    'subtitulo-prefix':   'Servicio de cena · Turnos a las',
+    'persona':            'persona',
+    'personas':           'personas',
+    'a-las':              'a las',
+    'btn-lang-flag':      '🇬🇧',
+    'btn-lang-title':     'Switch to English',
+  },
+  en: {
+    'pretitle':           'Welcome to',
+    'reserva-titulo':     'Book your table',
+    'aviso-tarde-h3':     'Phone reservations',
+    'aviso-tarde-p':      'For reservations from 19:00 today, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
+    'aviso-cierre-h3':    'No reservations today',
+    'aviso-cierre-p':     'We apologize for the inconvenience. Please contact us for more information.',
+    'label-nombre':       'Full name',
+    'placeholder-nombre': 'Your name',
+    'label-telefono':     'Phone',
+    'label-confirmacion': 'How would you like to receive confirmation?',
+    'label-email':        'Email',
+    'placeholder-email':  'your@email.com',
+    'label-personas':     'Number of guests',
+    'label-fecha':        'Date',
+    'hint-fecha':         '📅 Tap to select date',
+    'label-turno':        'Seating time',
+    'turno-default':      'Select a seating time',
+    'label-concierge':    '🎩 I\'m a concierge / agency',
+    'label-nombre-concierge': 'Name / Hotel',
+    'placeholder-concierge':  'E.g.: Ibiza Gran Hotel',
+    'btn-reservar':       'Request reservation',
+    'confirmacion-h3':    'Reservation received!',
+    'confirmacion-nota':  'We will contact you to confirm it.',
+    'btn-nueva':          'New reservation',
+    'ubicacion-h2':       'Location',
+    'footer-copy':        '© 2025 BAI BAI  ·  All rights reserved',
+    'footer-admin':       'Admin area',
+    'err-nombre':         'Please enter your name.',
+    'err-telefono':       'Please enter a valid phone number.',
+    'err-personas':       'Between 1 and 90 guests.',
+    'err-dia':            'Please select a date.',
+    'err-turno':          'Please select a seating time.',
+    'err-email-req':      'Please enter your email.',
+    'err-email-inv':      'Invalid email.',
+    'enviando':           'Sending…',
+    'completo':           'FULLY BOOKED',
+    'subtitulo-prefix':   'Dinner service · Seatings at',
+    'persona':            'guest',
+    'personas':           'guests',
+    'a-las':              'at',
+    'btn-lang-flag':      '🇪🇸',
+    'btn-lang-title':     'Cambiar a español',
+  }
+};
+
+let langActual = localStorage.getItem('baibai_lang') || 'es';
+
+function t(key) {
+  return TRANSLATIONS[langActual][key] || TRANSLATIONS['es'][key] || key;
+}
+
+function aplicarIdioma(lang) {
+  langActual = lang;
+  localStorage.setItem('baibai_lang', lang);
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (key === 'aviso-tarde-p') {
+      el.innerHTML = t(key);
+    } else {
+      el.textContent = t(key);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+
+  const btnLang = document.getElementById('btn-lang');
+  if (btnLang) {
+    btnLang.textContent = t('btn-lang-flag');
+    btnLang.title = t('btn-lang-title');
+  }
+
+  const turnoSelect = document.getElementById('turno');
+  if (turnoSelect && turnoSelect.options[0]) {
+    turnoSelect.options[0].textContent = t('turno-default');
+  }
+
+  const turnosLabel = getTurnos().sort().join(' · ');
+  document.getElementById('subtitulo-turnos').textContent = `${t('subtitulo-prefix')} ${turnosLabel}`;
+
+  const btnReservarEl = document.querySelector('button[type="submit"].btn-reservar');
+  if (btnReservarEl && !btnReservarEl.disabled) {
+    btnReservarEl.textContent = t('btn-reservar');
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────
+
 // ── SUPABASE ──────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://sudpdbfywhsidrerjcxz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rcNQwye5RVPNw66mGr53QA_nx9m6AWn';
@@ -25,7 +162,7 @@ document.getElementById('btn-nueva-reserva').addEventListener('click', () => {
   document.getElementById('aviso-tarde').classList.add('oculto');
   document.getElementById('aviso-cierre').classList.add('oculto');
   form.classList.remove('oculto');
-  btnReservar.textContent = 'Solicitar reserva';
+  btnReservar.textContent = t('btn-reservar');
   btnReservar.disabled = false;
   confirmacion.classList.add('oculto');
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -62,11 +199,11 @@ async function cargarTurnos(fecha) {
     } catch (_) {}
   }
 
-  getTurnos().sort().forEach(t => {
-    const lleno = fecha && (personasPorTurno[t] || 0) >= 90;
+  getTurnos().sort().forEach(hora => {
+    const lleno = fecha && (personasPorTurno[hora] || 0) >= 90;
     const opt = document.createElement('option');
-    opt.value = t;
-    opt.textContent = lleno ? `${t} h — COMPLETO` : `${t} h`;
+    opt.value = hora;
+    opt.textContent = lleno ? `${hora} h — ${t('completo')}` : `${hora} h`;
     opt.disabled = lleno;
     select.appendChild(opt);
   });
@@ -74,9 +211,11 @@ async function cargarTurnos(fecha) {
 
 cargarTurnos('');
 
-// Subtítulo dinámico con los turnos reales
-const turnosLabel = getTurnos().sort().join(' · ');
-document.getElementById('subtitulo-turnos').textContent = `Servicio de cena · Turnos a las ${turnosLabel}`;
+aplicarIdioma(langActual);
+
+document.getElementById('btn-lang').addEventListener('click', () => {
+  aplicarIdioma(langActual === 'es' ? 'en' : 'es');
+});
 
 // Mostrar/ocultar campo email según opción de confirmación
 document.querySelectorAll('input[name="confirmacion_via"]').forEach(radio => {
@@ -149,13 +288,13 @@ function validar() {
   const email    = document.getElementById('email').value.trim();
   let ok = true;
 
-  if (!nombre)                                              { marcarError('nombre',   'Introduce tu nombre.');          ok = false; }
-  if (!telefono || !/^[0-9\s\+\-]{9,15}$/.test(telefono)) { marcarError('telefono', 'Introduce un teléfono válido.'); ok = false; }
-  if (!personas || personas < 1 || personas > 90)          { marcarError('personas', 'Entre 1 y 90 personas.');        ok = false; }
-  if (!dia)                                                 { marcarError('dia',      'Selecciona una fecha.');          ok = false; }
-  if (!turno)                                               { marcarError('turno',    'Selecciona un turno.');           ok = false; }
-  if (viaConf === 'email' && !email)                        { marcarError('email',    'Introduce tu email.');            ok = false; }
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))  { marcarError('email',    'Email no válido.');               ok = false; }
+  if (!nombre)                                              { marcarError('nombre',   t('err-nombre'));    ok = false; }
+  if (!telefono || !/^[0-9\s\+\-]{9,15}$/.test(telefono)) { marcarError('telefono', t('err-telefono')); ok = false; }
+  if (!personas || personas < 1 || personas > 90)          { marcarError('personas', t('err-personas')); ok = false; }
+  if (!dia)                                                 { marcarError('dia',      t('err-dia'));       ok = false; }
+  if (!turno)                                               { marcarError('turno',    t('err-turno'));     ok = false; }
+  if (viaConf === 'email' && !email)                        { marcarError('email',    t('err-email-req')); ok = false; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))  { marcarError('email',    t('err-email-inv')); ok = false; }
 
   return ok;
 }
@@ -177,12 +316,13 @@ form.addEventListener('submit', (e) => {
   const origen       = esConcierge && nomConcierge ? `concierge: ${nomConcierge}` : 'web';
 
   const fecha    = new Date(dia + 'T00:00:00');
-  const fechaStr = fecha.toLocaleDateString('es-ES', {
+  const locale   = langActual === 'en' ? 'en-GB' : 'es-ES';
+  const fechaStr = fecha.toLocaleDateString(locale, {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
   const telefonoWa = prefijo + telefono.replace(/\D/g, '');
 
-  btnReservar.textContent = 'Enviando…';
+  btnReservar.textContent = t('enviando');
   btnReservar.disabled = true;
 
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
@@ -216,13 +356,14 @@ form.addEventListener('submit', (e) => {
     }).catch(err => console.error('Supabase:', err));
 
 
-    resumen.textContent = `${nombre} · ${personas} persona${personas > 1 ? 's' : ''} · ${fechaStr} a las ${turno} h`;
+    const pLabel = parseInt(personas) > 1 ? t('personas') : t('persona');
+    resumen.textContent = `${nombre} · ${personas} ${pLabel} · ${fechaStr} ${t('a-las')} ${turno} h`;
     form.classList.add('oculto');
     confirmacion.classList.remove('oculto');
     confirmacion.scrollIntoView({ behavior: 'smooth', block: 'center' });
   })
   .catch((err) => {
-    btnReservar.textContent = 'Solicitar reserva';
+    btnReservar.textContent = t('btn-reservar');
     btnReservar.disabled = false;
     alert('Error: ' + JSON.stringify(err));
   });

@@ -13,8 +13,9 @@
 
   <!-- HERO -->
   <header class="hero">
+    <button id="btn-lang" class="btn-lang" title="Switch to English">🇬🇧</button>
     <div class="hero-content">
-      <p class="pretitle">Bienvenidos a</p>
+      <p class="pretitle" data-i18n="pretitle">Bienvenidos a</p>
       <h1 class="nombre-restaurante">BAI BAI</h1>
       <div class="linea-dorada"></div>
       <div class="hero-contacto">
@@ -39,32 +40,32 @@
   <!-- RESERVAS -->
   <section class="reservas" id="reservas">
     <div class="container">
-      <h2>Reserva tu mesa</h2>
+      <h2 data-i18n="reserva-titulo">Reserva tu mesa</h2>
       <p class="subtitulo" id="subtitulo-turnos">Servicio de cena</p>
       <div class="linea-dorada"></div>
 
       <div id="aviso-tarde" class="aviso-cierre oculto">
         <p>✦</p>
-        <h3>Reservas por teléfono</h3>
-        <p>Para reservas de hoy a partir de las 19:00&nbsp;h, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.</p>
+        <h3 data-i18n="aviso-tarde-h3">Reservas por teléfono</h3>
+        <p id="aviso-tarde-p" data-i18n="aviso-tarde-p">Para reservas de hoy a partir de las 19:00&nbsp;h, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.</p>
       </div>
 
       <div id="aviso-cierre" class="aviso-cierre oculto">
         <p>✦</p>
-        <h3>Hoy no se hacen reservas</h3>
-        <p>Disculpa las molestias. Puedes contactarnos para más información.</p>
+        <h3 data-i18n="aviso-cierre-h3">Hoy no se hacen reservas</h3>
+        <p data-i18n="aviso-cierre-p">Disculpa las molestias. Puedes contactarnos para más información.</p>
       </div>
 
       <form id="formulario" class="tarjeta-form" novalidate>
 
         <div class="campo">
-          <label for="nombre">Nombre completo</label>
-          <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+          <label for="nombre" data-i18n="label-nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" data-i18n-placeholder="placeholder-nombre" placeholder="Tu nombre" required />
           <span class="error" id="err-nombre"></span>
         </div>
 
         <div class="campo">
-          <label for="telefono">Teléfono</label>
+          <label for="telefono" data-i18n="label-telefono">Teléfono</label>
           <div class="telefono-fila">
             <select id="prefijo" name="prefijo">
               <option value="34">🇪🇸 +34</option>
@@ -85,7 +86,7 @@
         </div>
 
         <div class="campo">
-          <label>¿Cómo quieres recibir la confirmación?</label>
+          <label data-i18n="label-confirmacion">¿Cómo quieres recibir la confirmación?</label>
           <div class="confirmacion-opciones">
             <label class="opcion-conf">
               <input type="radio" name="confirmacion_via" value="whatsapp" checked />
@@ -99,29 +100,29 @@
         </div>
 
         <div class="campo" id="campo-email" style="display:none;">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="tu@email.com" />
+          <label for="email" data-i18n="label-email">Email</label>
+          <input type="email" id="email" name="email" data-i18n-placeholder="placeholder-email" placeholder="tu@email.com" />
           <span class="error" id="err-email"></span>
         </div>
 
         <div class="fila-doble">
           <div class="campo">
-            <label for="personas">Número de personas</label>
+            <label for="personas" data-i18n="label-personas">Número de personas</label>
             <input type="number" id="personas" name="personas" min="1" max="90" placeholder="1 – 90" required />
             <span class="error" id="err-personas"></span>
           </div>
           <div class="campo">
-            <label for="dia">Fecha</label>
+            <label for="dia" data-i18n="label-fecha">Fecha</label>
             <input type="date" id="dia" name="dia" required />
-            <span class="hint-fecha">📅 Toca para elegir el día</span>
-<span class="error" id="err-dia"></span>
+            <span class="hint-fecha" data-i18n="hint-fecha">📅 Toca para elegir el día</span>
+            <span class="error" id="err-dia"></span>
           </div>
         </div>
 
         <div class="campo">
-          <label for="turno">Turno</label>
+          <label for="turno" data-i18n="label-turno">Turno</label>
           <select id="turno" name="turno" required>
-            <option value="">Selecciona un turno</option>
+            <option value="" data-i18n="turno-default">Selecciona un turno</option>
           </select>
           <span class="error" id="err-turno"></span>
         </div>
@@ -129,25 +130,25 @@
         <div class="campo campo-concierge">
           <label class="opcion-conf" style="width:auto;">
             <input type="checkbox" id="es-concierge" />
-            <span>🎩 Soy concierge / agencia</span>
+            <span data-i18n="label-concierge">🎩 Soy concierge / agencia</span>
           </label>
         </div>
 
         <div class="campo" id="campo-nombre-concierge" style="display:none;">
-          <label for="nombre-concierge">Nombre / Hotel</label>
-          <input type="text" id="nombre-concierge" placeholder="Ej: Hotel Ibiza Gran Hotel" />
+          <label for="nombre-concierge" data-i18n="label-nombre-concierge">Nombre / Hotel</label>
+          <input type="text" id="nombre-concierge" data-i18n-placeholder="placeholder-concierge" placeholder="Ej: Hotel Ibiza Gran Hotel" />
         </div>
 
-        <button type="submit" class="btn-reservar">Solicitar reserva</button>
+        <button type="submit" class="btn-reservar" data-i18n="btn-reservar">Solicitar reserva</button>
 
       </form>
 
       <div id="confirmacion" class="confirmacion oculto">
         <div class="icono-check">✓</div>
-        <h3>¡Reserva recibida!</h3>
+        <h3 data-i18n="confirmacion-h3">¡Reserva recibida!</h3>
         <p id="resumen"></p>
-        <p class="nota">Nos pondremos en contacto contigo para confirmarla.</p>
-        <button id="btn-nueva-reserva" class="btn-reservar" style="margin-top:1.8rem;">Nueva reserva</button>
+        <p class="nota" data-i18n="confirmacion-nota">Nos pondremos en contacto contigo para confirmarla.</p>
+        <button id="btn-nueva-reserva" class="btn-reservar" data-i18n="btn-nueva" style="margin-top:1.8rem;">Nueva reserva</button>
       </div>
 
     </div>
@@ -156,7 +157,7 @@
   <!-- UBICACIÓN -->
   <section class="ubicacion" id="ubicacion">
     <div class="container">
-      <h2>Dónde estamos</h2>
+      <h2 data-i18n="ubicacion-h2">Dónde estamos</h2>
       <div class="linea-dorada"></div>
       <p class="ubicacion-dir">Plaza Sa Riba, 9 &nbsp;·&nbsp; Puerto de Ibiza</p>
       <p class="ubicacion-dir"><a href="tel:+34971191592" style="color:inherit;text-decoration:none;">+34 971 191 592</a></p>
@@ -178,8 +179,8 @@
   <!-- FOOTER -->
   <footer>
     <div class="linea-dorada"></div>
-    <p>© 2025 BAI BAI &nbsp;·&nbsp; Todos los derechos reservados</p>
-    <p style="margin-top:0.8rem;"><a href="admin.html" style="color:rgba(201,168,76,0.35);font-size:0.75rem;letter-spacing:0.15em;text-decoration:none;">Área de gestión</a></p>
+    <p data-i18n="footer-copy">© 2025 BAI BAI &nbsp;·&nbsp; Todos los derechos reservados</p>
+    <p style="margin-top:0.8rem;"><a href="admin.html" style="color:rgba(201,168,76,0.35);font-size:0.75rem;letter-spacing:0.15em;text-decoration:none;" data-i18n="footer-admin">Área de gestión</a></p>
   </footer>
 
   <script src="script.js"></script>
