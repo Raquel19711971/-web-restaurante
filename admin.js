@@ -38,6 +38,7 @@ function fromSupabase(row) {
     notas:         row.comentarios  || '',
     origen:        row.origen       || 'web',
     confirmada:    row.confirmada   || false,
+    idioma:        row.idioma       || 'es',
     fechaRegistro: row.created_at
       ? new Date(row.created_at).toLocaleString('es-ES')
       : ''
@@ -177,9 +178,17 @@ async function confirmarWA(id) {
   const reservas = await getReservas();
   const r = reservas.find(r => r.id === id);
   if (!r) return;
-  const tel  = r.telefono.replace(/\D/g, '');
-  const pers = parseInt(r.personas);
-  const msg  = `Hola ${r.nombre}, tu reserva en BAI BAI está confirmada: ${pers} persona${pers > 1 ? 's' : ''} el ${r.dia} a las ${r.turno} h. Gracias por elegirnos. Si necesita modificar o cancelar su reserva, por favor póngase en contacto con nosotros llamando al +34 971 191 592. ¡Estamos deseando recibirle, nos vemos pronto!`;
+  const tel      = r.telefono.replace(/\D/g, '');
+  const pers     = parseInt(r.personas);
+  const locale   = r.idioma === 'en' ? 'en-GB' : 'es-ES';
+  const diaLocal = r.diaRaw
+    ? new Date(r.diaRaw + 'T00:00:00').toLocaleDateString(locale, {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      })
+    : r.dia;
+  const msg = r.idioma === 'en'
+    ? `Hi ${r.nombre}, your reservation at BAI BAI is confirmed: ${pers} guest${pers > 1 ? 's' : ''} on ${diaLocal} at ${r.turno} h. Thank you for choosing us. If you need to modify your reservation, please contact us at +34 971 191 592. We look forward to welcoming you, see you soon!`
+    : `Hola ${r.nombre}, tu reserva en BAI BAI está confirmada: ${pers} persona${pers > 1 ? 's' : ''} el ${diaLocal} a las ${r.turno} h. Gracias por elegirnos. Si necesita modificar o cancelar su reserva, por favor póngase en contacto con nosotros llamando al +34 971 191 592. ¡Estamos deseando recibirle, nos vemos pronto!`;
   window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
   await marcarConfirmada(id);
   await actualizarBadgePendientes();
@@ -195,13 +204,41 @@ async function confirmarEmail(id) {
   const r = reservas.find(r => r.id === id);
   if (!r || !r.email) return;
   try {
+    const locale   = r.idioma === 'en' ? 'en-GB' : 'es-ES';
+    const diaLocal = r.diaRaw
+      ? new Date(r.diaRaw + 'T00:00:00').toLocaleDateString(locale, {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        })
+      : r.dia;
+    const labels = r.idioma === 'en'
+      ? {
+          lbl_titulo:    'Reservation Confirmed!',
+          lbl_nombre:    'Name',
+          lbl_personas:  'Guests',
+          lbl_fecha:     'Date',
+          lbl_turno:     'Seating',
+          lbl_gracias:   'Thank you for choosing us.',
+          lbl_contacto:  'If you need to modify your reservation, please contact us at',
+          lbl_despedida: 'We look forward to welcoming you, see you soon!',
+        }
+      : {
+          lbl_titulo:    '¡Reserva Confirmada!',
+          lbl_nombre:    'Nombre',
+          lbl_personas:  'Personas',
+          lbl_fecha:     'Fecha',
+          lbl_turno:     'Turno',
+          lbl_gracias:   'Gracias por elegirnos.',
+          lbl_contacto:  'Si necesita modificar su reserva, por favor póngase en contacto con nosotros llamando al',
+          lbl_despedida: '¡Estamos deseando recibirle, nos vemos pronto!',
+        };
     emailjs.init('93AVZmo6iBz2c1fmD');
     await emailjs.send('service_h3pvqic', 'template_confirmacion_cl', {
       nombre:        r.nombre,
       email_cliente: r.email,
       personas:      r.personas,
-      dia:           r.dia,
+      dia:           diaLocal,
       turno:         r.turno,
+      ...labels,
     });
     await marcarConfirmada(id);
     await actualizarBadgePendientes();

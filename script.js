@@ -351,6 +351,7 @@ form.addEventListener('submit', (e) => {
         hora:       turno,
         origen,
         comentarios: esConcierge && nomConcierge ? `Concierge: ${nomConcierge}` : null,
+        idioma:     langActual,
         confirmada: false
       })
     }).catch(err => console.error('Supabase:', err));
