@@ -451,16 +451,38 @@ async function renderizar() {
 
 // ── GESTIÓN DE DÍAS CERRADOS ──────────────────────────────────────────────
 
-function getCierres() {
-  return JSON.parse(localStorage.getItem('baibai_cierres') || '[]');
+async function getCierres() {
+  try {
+    const rows = await sbFetch('cierres?select=fecha&order=fecha.asc');
+    return (rows || []).map(r => r.fecha);
+  } catch (_) { return []; }
 }
 
-function guardarCierres(lista) {
-  localStorage.setItem('baibai_cierres', JSON.stringify(lista));
+async function addCierre(fecha) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/cierres`, {
+    method: 'POST',
+    headers: {
+      'apikey':        SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type':  'application/json',
+      'Prefer':        'return=representation'
+    },
+    body: JSON.stringify({ fecha })
+  });
+  const text = await res.text();
+  alert('Estado: ' + res.status + '\nRespuesta: ' + text);
+  if (!res.ok) throw new Error(text);
 }
 
-function renderizarCierres() {
-  const lista = getCierres();
+async function removeCierre(fecha) {
+  await sbFetch(`cierres?fecha=eq.${fecha}`, {
+    method: 'DELETE',
+    headers: { 'Prefer': 'return=minimal' }
+  });
+}
+
+async function renderizarCierres() {
+  const lista = await getCierres();
   const contenedor = document.getElementById('cierres-lista');
 
   if (lista.length === 0) {
@@ -479,24 +501,23 @@ function renderizarCierres() {
     }).join('');
 
   contenedor.querySelectorAll('button[data-fecha]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const nuevos = getCierres().filter(f => f !== btn.dataset.fecha);
-      guardarCierres(nuevos);
-      renderizarCierres();
+    btn.addEventListener('click', async () => {
+      await removeCierre(btn.dataset.fecha);
+      await renderizarCierres();
     });
   });
 }
 
-document.getElementById('btn-add-cierre').addEventListener('click', () => {
+document.getElementById('btn-add-cierre').addEventListener('click', async () => {
   const fecha = document.getElementById('cierre-fecha').value;
   if (!fecha) return;
-  const lista = getCierres();
-  if (!lista.includes(fecha)) {
-    lista.push(fecha);
-    guardarCierres(lista);
+  try {
+    await addCierre(fecha);
+    document.getElementById('cierre-fecha').value = '';
+    await renderizarCierres();
+  } catch (e) {
+    alert('Error al cerrar el día: ' + e.message);
   }
-  document.getElementById('cierre-fecha').value = '';
-  renderizarCierres();
 });
 
 renderizarCierres();
@@ -549,7 +570,7 @@ const DIAS_SEMANA = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 
 async function renderCalendario() {
   const reservas = await getReservas();
-  const cierres  = getCierres();
+  const cierres  = await getCierres();
   const hoyStr   = new Date().toISOString().split('T')[0];
 
   const numDias      = new Date(calYear, calMonth + 1, 0).getDate();

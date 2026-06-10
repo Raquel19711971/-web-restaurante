@@ -1,7 +1,8 @@
-const CACHE = 'baibai-v1';
+const CACHE = 'baibai-v2';
 const SHELL = [
   '/admin.html',
   '/admin.js',
+  '/script.js',
   '/logo.png'
 ];
 

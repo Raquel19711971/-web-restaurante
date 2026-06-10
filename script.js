@@ -5,8 +5,8 @@ const TRANSLATIONS = {
     'reserva-titulo':     'Reserva tu mesa',
     'aviso-tarde-h3':     'Reservas por teléfono',
     'aviso-tarde-p':      'Para reservas de hoy a partir de las 19:00 h, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
-    'aviso-cierre-h3':    'Hoy no se hacen reservas',
-    'aviso-cierre-p':     'Disculpa las molestias. Puedes contactarnos para más información.',
+    'aviso-cierre-h3':    '',
+    'aviso-cierre-p':     '',
     'label-nombre':       'Nombre completo',
     'placeholder-nombre': 'Tu nombre',
     'label-telefono':     'Teléfono',
@@ -49,8 +49,8 @@ const TRANSLATIONS = {
     'reserva-titulo':     'Book your table',
     'aviso-tarde-h3':     'Phone reservations',
     'aviso-tarde-p':      'For reservations from 19:00 today, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
-    'aviso-cierre-h3':    'No reservations today',
-    'aviso-cierre-p':     'We apologize for the inconvenience. Please contact us for more information.',
+    'aviso-cierre-h3':    '',
+    'aviso-cierre-p':     '',
     'label-nombre':       'Full name',
     'placeholder-nombre': 'Your name',
     'label-telefono':     'Phone',
@@ -103,7 +103,7 @@ function aplicarIdioma(lang) {
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if (key === 'aviso-tarde-p') {
+    if (key === 'aviso-tarde-p' || key === 'aviso-cierre-p') {
       el.innerHTML = t(key);
     } else {
       el.textContent = t(key);
@@ -171,8 +171,14 @@ document.getElementById('btn-nueva-reserva').addEventListener('click', () => {
 const hoy = new Date().toISOString().split('T')[0];
 document.getElementById('dia').min = hoy;
 
-function getCierres() {
-  return JSON.parse(localStorage.getItem('baibai_cierres') || '[]');
+async function getCierres() {
+  try {
+    const rows = await fetch(
+      `${SUPABASE_URL}/rest/v1/cierres?select=fecha`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    ).then(r => r.json());
+    return (rows || []).map(r => r.fecha);
+  } catch (_) { return []; }
 }
 
 function getTurnos() {
@@ -233,7 +239,7 @@ document.getElementById('es-concierge').addEventListener('change', (e) => {
 
 document.getElementById('dia').addEventListener('change', async (e) => {
   document.querySelector('.hint-fecha').style.display = 'none';
-  const cerrados = getCierres();
+  const cerrados = await getCierres();
   const avisoEl = document.getElementById('aviso-cierre');
   const formEl  = document.getElementById('formulario');
   const fecha     = e.target.value;
@@ -260,6 +266,16 @@ document.getElementById('dia').addEventListener('change', async (e) => {
     turnoSelect.disabled = true;
     btnReservar.disabled = true;
   } else if (cerrados.includes(fecha)) {
+    const fObj    = new Date(fecha + 'T00:00:00');
+    const locale  = langActual === 'en' ? 'en-GB' : 'es-ES';
+    const fLabel  = fObj.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
+    const tel     = '<a href="tel:+34690704321" style="color:inherit;white-space:nowrap;">+34 690 704 321</a>';
+    const msgH3   = langActual === 'en' ? `Closed · ${fLabel}` : `Cerrado · ${fLabel}`;
+    const msgP    = langActual === 'en'
+      ? `For reservations on this day, please contact the restaurant directly by phone: ${tel}.`
+      : `Para reservas de este día, póngase en contacto con el restaurante directamente por teléfono ${tel}.`;
+    document.querySelector('[data-i18n="aviso-cierre-h3"]').textContent = msgH3;
+    document.querySelector('[data-i18n="aviso-cierre-p"]').innerHTML = msgP;
     avisoEl.classList.remove('oculto');
     formEl.classList.add('oculto');
   }
