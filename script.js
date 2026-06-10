@@ -266,16 +266,14 @@ document.getElementById('dia').addEventListener('change', async (e) => {
     turnoSelect.disabled = true;
     btnReservar.disabled = true;
   } else if (cerrados.includes(fecha)) {
-    const fObj    = new Date(fecha + 'T00:00:00');
-    const locale  = langActual === 'en' ? 'en-GB' : 'es-ES';
-    const fLabel  = fObj.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' });
-    const tel     = '<a href="tel:+34690704321" style="color:inherit;white-space:nowrap;">+34 690 704 321</a>';
-    const msgH3   = langActual === 'en' ? `Closed · ${fLabel}` : `Cerrado · ${fLabel}`;
-    const msgP    = langActual === 'en'
-      ? `For reservations on this day, please contact the restaurant directly by phone: ${tel}.`
-      : `Para reservas de este día, póngase en contacto con el restaurante directamente por teléfono ${tel}.`;
-    document.querySelector('[data-i18n="aviso-cierre-h3"]').textContent = msgH3;
-    document.querySelector('[data-i18n="aviso-cierre-p"]').innerHTML = msgP;
+    const fObj   = new Date(fecha + 'T00:00:00');
+    const fES    = fObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    const fEN    = fObj.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    const tel    = '<a href="tel:+34690704321" style="color:inherit;white-space:nowrap;">+34 690 704 321</a>';
+    document.querySelector('[data-i18n="aviso-cierre-h3"]').textContent = `Cerrado · ${fES}`;
+    document.querySelector('[data-i18n="aviso-cierre-p"]').innerHTML =
+      `Para reservas de este día, póngase en contacto con el restaurante directamente por teléfono ${tel}.<br><br>` +
+      `For reservations on this day, please contact the restaurant directly by phone ${tel}.`;
     avisoEl.classList.remove('oculto');
     formEl.classList.add('oculto');
   }
