@@ -459,19 +459,11 @@ async function getCierres() {
 }
 
 async function addCierre(fecha) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/cierres`, {
+  await sbFetch('cierres', {
     method: 'POST',
-    headers: {
-      'apikey':        SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type':  'application/json',
-      'Prefer':        'return=representation'
-    },
+    headers: { 'Prefer': 'return=minimal' },
     body: JSON.stringify({ fecha })
   });
-  const text = await res.text();
-  alert('Estado: ' + res.status + '\nRespuesta: ' + text);
-  if (!res.ok) throw new Error(text);
 }
 
 async function removeCierre(fecha) {
