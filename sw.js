@@ -1,7 +1,8 @@
-const CACHE = 'baibai-v3';
+const CACHE = 'baibai-v4';
 const SHELL = [
-  '/admin.html',
-  '/admin.js',
+  '/',
+  '/index.html',
+  '/styles.css',
   '/script.js',
   '/logo.png'
 ];
@@ -22,6 +23,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.url.includes('supabase')) return;
+  if (e.request.url.includes('admin')) return;
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
