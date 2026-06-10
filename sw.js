@@ -1,4 +1,4 @@
-const CACHE = 'baibai-v2';
+const CACHE = 'baibai-v3';
 const SHELL = [
   '/admin.html',
   '/admin.js',
