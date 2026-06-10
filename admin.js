@@ -1,4 +1,4 @@
-// ── SUPABASE ──────────────────────────────────────────────────────────────
+// ── SUPABASE ─────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://sudpdbfywhsidrerjcxz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rcNQwye5RVPNw66mGr53QA_nx9m6AWn';
 
