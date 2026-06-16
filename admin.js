@@ -188,7 +188,7 @@ async function confirmarWA(id) {
     : r.dia;
   const msg = r.idioma === 'en'
     ? `Hi ${r.nombre}, your reservation at BAI BAI is confirmed: ${pers} guest${pers > 1 ? 's' : ''} on ${diaLocal} at ${r.turno} h. Thank you for choosing us. If you need to modify or cancel your reservation, please contact us at +34 971 191 592. We look forward to welcoming you, see you soon!`
-    : `Hola ${r.nombre}, tu reserva en BAI BAI está confirmada: ${pers} persona${pers > 1 ? 's' : ''} el ${diaLocal} a las ${r.turno} h. Gracias por elegirnos. Si necesita modificar o cancelar su reserva, por favor póngase en contacto con nosotros llamando al +34 971 191 592. ¡Estamos deseando recibirle, nos vemos pronto!`;
+    : `Hola ${r.nombre}, su reserva en BAI BAI está confirmada: ${pers} persona${pers > 1 ? 's' : ''} el ${diaLocal} a las ${r.turno} h. Gracias por elegirnos. Si necesita modificar o cancelar su reserva, por favor póngase en contacto con nosotros llamando al +34 971 191 592. ¡Estamos deseando recibirle, nos vemos pronto!`;
   window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
   await marcarConfirmada(id);
   await actualizarBadgePendientes();
