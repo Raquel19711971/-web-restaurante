@@ -735,7 +735,7 @@ document.getElementById('btn-añadir-manual').addEventListener('click', async ()
     mesa:       '',
     notas:      '',
     origen:     origen === 'concierge' ? `concierge: ${concierge}` : origen,
-    confirmada: true
+    confirmada: false
   });
 
   document.getElementById('m-nombre').value    = '';
