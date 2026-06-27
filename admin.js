@@ -263,8 +263,11 @@ function filaPendienteHTML(r) {
       <td class="td-nombre">${r.nombre}</td>
       <td class="td-telefono">${formatTelefono(r.telefono)}</td>
       <td class="td-personas">${r.personas}</td>
-      <td class="td-muted" style="white-space:nowrap">${r.dia}</td>
-      <td class="td-muted">${r.turno} h</td>
+      <td class="td-muted" style="line-height:1.4">
+        <span style="display:block;font-weight:600;text-transform:capitalize">${r.dia.split(', ')[0]}</span>
+        <span style="font-size:0.82rem">${r.dia.split(', ')[1]?.replace(/ de \d{4}$/, '') || ''}</span>
+      </td>
+      <td class="td-muted" style="white-space:nowrap">${r.turno} h</td>
       <td class="col-cancelar">
         ${btnConfirmar}
       </td>
