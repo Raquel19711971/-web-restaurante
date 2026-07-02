@@ -1,30 +1,9 @@
-const CACHE = 'baibai-v5';
-const SHELL = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/logo.png'
-];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)));
-  self.skipWaiting();
-});
-
+// Se desinstala y limpia todos los cachés
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', e => {
-  if (e.request.url.includes('supabase')) return;
-  if (e.request.url.includes('admin')) return;
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    caches.keys()
+      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => self.registration.unregister())
   );
 });
