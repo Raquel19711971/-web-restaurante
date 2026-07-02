@@ -168,8 +168,10 @@ document.getElementById('btn-nueva-reserva').addEventListener('click', () => {
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
-const hoy = new Date().toISOString().split('T')[0];
+const _hoyDate = new Date();
+const hoy = `${_hoyDate.getFullYear()}-${String(_hoyDate.getMonth()+1).padStart(2,'0')}-${String(_hoyDate.getDate()).padStart(2,'0')}`;
 document.getElementById('dia').min = hoy;
+document.getElementById('dia').max = '';
 
 async function getCierres() {
   try {
@@ -306,6 +308,7 @@ function validar() {
   if (!telefono || !/^[0-9\s\+\-]{9,15}$/.test(telefono)) { marcarError('telefono', t('err-telefono')); ok = false; }
   if (!personas || personas < 1 || personas > 90)          { marcarError('personas', t('err-personas')); ok = false; }
   if (!dia)                                                 { marcarError('dia',      t('err-dia'));       ok = false; }
+  else if (dia < hoy)                                       { marcarError('dia',      t('err-dia'));       ok = false; }
   if (!turno)                                               { marcarError('turno',    t('err-turno'));     ok = false; }
   if (viaConf === 'email' && !email)                        { marcarError('email',    t('err-email-req')); ok = false; }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))  { marcarError('email',    t('err-email-inv')); ok = false; }
