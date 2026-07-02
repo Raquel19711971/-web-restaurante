@@ -1,4 +1,4 @@
-const CACHE = 'baibai-v4';
+const CACHE = 'baibai-v5';
 const SHELL = [
   '/',
   '/index.html',
