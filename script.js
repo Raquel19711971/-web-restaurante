@@ -207,7 +207,7 @@ async function cargarTurnos(fecha) {
   if (fecha) {
     try {
       const rows = await fetch(
-        `${SUPABASE_URL}/rest/v1/reservas?select=hora,personas&fecha=eq.${fecha}`,
+        `${SUPABASE_URL}/rest/v1/disponibilidad_turnos?select=hora,personas&fecha=eq.${fecha}`,
         { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
       ).then(r => r.json());
       rows.forEach(r => {

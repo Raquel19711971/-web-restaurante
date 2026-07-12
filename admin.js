@@ -4,10 +4,12 @@ const SUPABASE_KEY = 'sb_publishable_rcNQwye5RVPNw66mGr53QA_nx9m6AWn';
 
 async function sbFetch(path, options = {}) {
   const { headers: extraHeaders, ...rest } = options;
+  const { data: { session } } = await supabaseAuth.auth.getSession();
+  const token = session?.access_token || SUPABASE_KEY;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
       'apikey':        SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type':  'application/json',
       'Prefer':        'return=representation',
       ...extraHeaders
