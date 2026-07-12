@@ -128,20 +128,31 @@ filtroPicker.addEventListener('change', (e) => {
   renderizar();
 });
 
-function getTurnosCompletos() {
-  return JSON.parse(localStorage.getItem('baibai_turnos_completos') || '[]');
+async function getTurnosCompletos() {
+  try {
+    const rows = await sbFetch('turnos_completos?select=fecha,turno');
+    return rows || [];
+  } catch (_) { return []; }
 }
 
-function isCompleto(fecha, turno) {
-  return getTurnosCompletos().some(c => c.fecha === fecha && c.turno === turno);
+function isCompletoEn(lista, fecha, turno) {
+  return lista.some(c => c.fecha === fecha && c.turno === turno);
 }
 
-function toggleCompleto(fecha, turno) {
-  const lista = getTurnosCompletos();
-  const idx = lista.findIndex(c => c.fecha === fecha && c.turno === turno);
-  if (idx >= 0) lista.splice(idx, 1);
-  else lista.push({ fecha, turno });
-  localStorage.setItem('baibai_turnos_completos', JSON.stringify(lista));
+async function toggleCompleto(fecha, turno) {
+  const lista = await getTurnosCompletos();
+  if (isCompletoEn(lista, fecha, turno)) {
+    await sbFetch(`turnos_completos?fecha=eq.${fecha}&turno=eq.${encodeURIComponent(turno)}`, {
+      method: 'DELETE',
+      headers: { 'Prefer': 'return=minimal' }
+    });
+  } else {
+    await sbFetch('turnos_completos', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ fecha, turno })
+    });
+  }
 }
 
 async function actualizarBadgePendientes() {
@@ -363,6 +374,7 @@ function filaHTML(r) {
 async function renderizar() {
   const fecha = filtroPicker.value;
   const todas = await getReservas();
+  const turnosCompletosLista = await getTurnosCompletos();
   turnosGlobal = [...new Set([...getTurnos(), ...todas.map(r => r.turno).filter(Boolean)])].sort();
   const delDia = todas.filter(r => r.diaRaw === fecha);
 
@@ -387,7 +399,7 @@ async function renderizar() {
   turnosDelDia.forEach(turno => {
     const delTurno = delDia.filter(r => r.turno === turno);
     const personasTurno = delTurno.reduce((s, r) => s + parseInt(r.personas || 0), 0);
-    const completo = isCompleto(fecha, turno);
+    const completo = isCompletoEn(turnosCompletosLista, fecha, turno);
 
     html += `
       <div class="turno-bloque">
@@ -436,8 +448,8 @@ async function renderizar() {
   });
 
   contenido.querySelectorAll('.btn-toggle-turno').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggleCompleto(btn.dataset.fecha, btn.dataset.turno);
+    btn.addEventListener('click', async () => {
+      await toggleCompleto(btn.dataset.fecha, btn.dataset.turno);
       renderizar();
     });
   });

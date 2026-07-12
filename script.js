@@ -188,11 +188,22 @@ function getTurnos() {
   return guardados ? JSON.parse(guardados) : ['19:30', '21:00', '22:30'];
 }
 
+async function getTurnosCerrados(fecha) {
+  try {
+    const rows = await fetch(
+      `${SUPABASE_URL}/rest/v1/turnos_completos?select=turno&fecha=eq.${fecha}`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    ).then(r => r.json());
+    return (rows || []).map(r => r.turno);
+  } catch (_) { return []; }
+}
+
 async function cargarTurnos(fecha) {
   const select = document.getElementById('turno');
   while (select.options.length > 1) select.remove(1);
 
   let personasPorTurno = {};
+  let turnosCerrados = [];
   if (fecha) {
     try {
       const rows = await fetch(
@@ -205,10 +216,11 @@ async function cargarTurnos(fecha) {
         personasPorTurno[h] += parseInt(r.personas || 0);
       });
     } catch (_) {}
+    turnosCerrados = await getTurnosCerrados(fecha);
   }
 
   getTurnos().sort().forEach(hora => {
-    const lleno = fecha && (personasPorTurno[hora] || 0) >= 90;
+    const lleno = fecha && ((personasPorTurno[hora] || 0) >= 90 || turnosCerrados.includes(hora));
     const opt = document.createElement('option');
     opt.value = hora;
     opt.textContent = lleno ? `${hora} h — ${t('completo')}` : `${hora} h`;
@@ -349,30 +361,38 @@ form.addEventListener('submit', (e) => {
     concierge:      esConcierge && nomConcierge ? nomConcierge : '—',
     confirm_url:    email ? `confirmar.html?n=${encodeURIComponent(nombre)}&e=${encodeURIComponent(email)}&p=${encodeURIComponent(personas)}&d=${encodeURIComponent(fechaStr)}&t=${encodeURIComponent(turno)}` : '',
   })
-  .then(() => {
+  .then(async () => {
     // Guardar reserva en Supabase
-    fetch(`${SUPABASE_URL}/rest/v1/reservas`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({
-        nombre,
-        telefono:   `+${telefonoWa}`,
-        email:      email || null,
-        personas:   parseInt(personas),
-        fecha:      dia,
-        hora:       turno,
-        origen,
-        comentarios: esConcierge && nomConcierge ? `Concierge: ${nomConcierge}` : null,
-        idioma:     langActual,
-        confirmada: false
-      })
-    }).catch(err => console.error('Supabase:', err));
-
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/reservas`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          nombre,
+          telefono:   `+${telefonoWa}`,
+          email:      email || null,
+          personas:   parseInt(personas),
+          fecha:      dia,
+          hora:       turno,
+          origen,
+          comentarios: esConcierge && nomConcierge ? `Concierge: ${nomConcierge}` : null,
+          idioma:     langActual,
+          confirmada: false
+        })
+      });
+      if (!res.ok) {
+        console.error('Supabase: la reserva no se guardó', res.status, await res.text());
+        alert('Tu reserva se ha enviado, pero ha habido un problema al guardarla en el sistema. Por favor, llama al restaurante al +34 971 191 592 para confirmarla directamente.');
+      }
+    } catch (err) {
+      console.error('Supabase:', err);
+      alert('Tu reserva se ha enviado, pero ha habido un problema al guardarla en el sistema. Por favor, llama al restaurante al +34 971 191 592 para confirmarla directamente.');
+    }
 
     const pLabel = parseInt(personas) > 1 ? t('personas') : t('persona');
     resumen.textContent = `${nombre} · ${personas} ${pLabel} · ${fechaStr} ${t('a-las')} ${turno} h`;
