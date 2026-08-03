@@ -161,6 +161,7 @@ document.getElementById('btn-nueva-reserva').addEventListener('click', () => {
   cargarTurnos('');
   document.getElementById('aviso-tarde').classList.add('oculto');
   document.getElementById('aviso-cierre').classList.add('oculto');
+  document.getElementById('aviso-sin-reservas').classList.add('oculto');
   form.classList.remove('oculto');
   btnReservar.textContent = t('btn-reservar');
   btnReservar.disabled = false;
@@ -251,10 +252,13 @@ document.getElementById('es-concierge').addEventListener('change', (e) => {
   if (!e.target.checked) document.getElementById('nombre-concierge').value = '';
 });
 
+const DIAS_SIN_RESERVAS = ['2026-08-08'];
+
 document.getElementById('dia').addEventListener('change', async (e) => {
   document.querySelector('.hint-fecha').style.display = 'none';
   const cerrados = await getCierres();
   const avisoEl = document.getElementById('aviso-cierre');
+  const avisoSinReservas = document.getElementById('aviso-sin-reservas');
   const formEl  = document.getElementById('formulario');
   const fecha     = e.target.value;
   const avisoTarde = document.getElementById('aviso-tarde');
@@ -266,6 +270,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
 
   avisoTarde.classList.add('oculto');
   avisoEl.classList.add('oculto');
+  avisoSinReservas.classList.add('oculto');
   formEl.classList.remove('oculto');
 
   const turnoSelect = document.getElementById('turno');
@@ -273,7 +278,11 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   turnoSelect.disabled = false;
   btnReservar.disabled = false;
 
-  if (esHoy && despuesDe19) {
+  if (DIAS_SIN_RESERVAS.includes(fecha)) {
+    avisoSinReservas.classList.remove('oculto');
+    avisoSinReservas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    formEl.classList.add('oculto');
+  } else if (esHoy && despuesDe19) {
     avisoTarde.classList.remove('oculto');
     avisoTarde.scrollIntoView({ behavior: 'smooth', block: 'center' });
     while (turnoSelect.options.length > 1) turnoSelect.remove(1);
