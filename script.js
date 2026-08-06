@@ -186,7 +186,7 @@ async function getCierres() {
 
 function getTurnos() {
   const guardados = localStorage.getItem('baibai_turnos');
-  return guardados ? JSON.parse(guardados) : ['19:30', '21:00', '22:30'];
+  return guardados ? JSON.parse(guardados) : ['19:30', '20:00', '21:00', '22:30'];
 }
 
 async function getTurnosCerrados(fecha) {

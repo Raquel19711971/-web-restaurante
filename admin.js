@@ -94,7 +94,7 @@ async function marcarConfirmada(id) {
 }
 // ─────────────────────────────────────────────────────────────────────────
 
-const TURNOS_DEFAULT = ['19:30', '21:00', '22:30'];
+const TURNOS_DEFAULT = ['19:30', '20:00', '21:00', '22:30'];
 let turnosGlobal = [...TURNOS_DEFAULT];
 
 function getTurnos() {
