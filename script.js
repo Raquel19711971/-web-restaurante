@@ -253,12 +253,14 @@ document.getElementById('es-concierge').addEventListener('change', (e) => {
 });
 
 const DIAS_SIN_RESERVAS = ['2026-08-08'];
+const DIAS_EVENTO = ['2026-09-11'];
 
 document.getElementById('dia').addEventListener('change', async (e) => {
   document.querySelector('.hint-fecha').style.display = 'none';
   const cerrados = await getCierres();
   const avisoEl = document.getElementById('aviso-cierre');
   const avisoSinReservas = document.getElementById('aviso-sin-reservas');
+  const avisoEvento = document.getElementById('aviso-evento');
   const formEl  = document.getElementById('formulario');
   const fecha     = e.target.value;
   const avisoTarde = document.getElementById('aviso-tarde');
@@ -271,6 +273,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   avisoTarde.classList.add('oculto');
   avisoEl.classList.add('oculto');
   avisoSinReservas.classList.add('oculto');
+  avisoEvento.classList.add('oculto');
   formEl.classList.remove('oculto');
 
   const turnoSelect = document.getElementById('turno');
@@ -278,7 +281,11 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   turnoSelect.disabled = false;
   btnReservar.disabled = false;
 
-  if (DIAS_SIN_RESERVAS.includes(fecha)) {
+  if (DIAS_EVENTO.includes(fecha)) {
+    avisoEvento.classList.remove('oculto');
+    avisoEvento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    formEl.classList.add('oculto');
+  } else if (DIAS_SIN_RESERVAS.includes(fecha)) {
     avisoSinReservas.classList.remove('oculto');
     avisoSinReservas.scrollIntoView({ behavior: 'smooth', block: 'center' });
     formEl.classList.add('oculto');

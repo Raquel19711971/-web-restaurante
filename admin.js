@@ -48,8 +48,19 @@ function fromSupabase(row) {
 }
 
 async function getReservas() {
-  const rows = await sbFetch('reservas?select=*&order=created_at.asc');
-  return (rows || []).map(fromSupabase);
+  const PAGE_SIZE = 1000;
+  let desde = 0;
+  let todasFilas = [];
+  while (true) {
+    const pagina = await sbFetch('reservas?select=*&order=created_at.asc,id.asc', {
+      headers: { 'Range': `${desde}-${desde + PAGE_SIZE - 1}` }
+    });
+    if (!pagina || pagina.length === 0) break;
+    todasFilas = todasFilas.concat(pagina);
+    if (pagina.length < PAGE_SIZE) break;
+    desde += PAGE_SIZE;
+  }
+  return todasFilas.map(fromSupabase);
 }
 
 async function insertReserva(reserva) {
