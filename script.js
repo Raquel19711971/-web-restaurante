@@ -286,11 +286,11 @@ document.getElementById('dia').addEventListener('change', async (e) => {
     const fechaEventoES = fechaEvento.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
     const fechaEventoEN = fechaEvento.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
     document.querySelector('#aviso-evento h3').textContent = langActual === 'en'
-      ? 'Lucciano Event — Ibiza Port'
-      : 'Evento Lucciano — Puerto de Ibiza';
+      ? 'SOLOMUN Event — Ibiza Port'
+      : 'Evento SOLOMUN — Puerto de Ibiza';
     document.querySelector('#aviso-evento p:last-child').innerHTML = langActual === 'en'
-      ? `On ${fechaEventoEN} we're hosting the Lucciano Event at Ibiza Port. Online reservations aren't available that day — to book, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`
-      : `El ${fechaEventoES} celebramos el Evento Lucciano en el Puerto de Ibiza. Ese día las reservas online no están disponibles — para reservar, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`;
+      ? `On ${fechaEventoEN} we're hosting the SOLOMUN Event at Ibiza Port. Online reservations aren't available that day — to book, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`
+      : `El ${fechaEventoES} celebramos el Evento SOLOMUN en el Puerto de Ibiza. Ese día las reservas online no están disponibles — para reservar, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`;
     avisoEvento.classList.remove('oculto');
     avisoEvento.scrollIntoView({ behavior: 'smooth', block: 'center' });
     formEl.classList.add('oculto');
