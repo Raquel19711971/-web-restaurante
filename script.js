@@ -253,7 +253,7 @@ document.getElementById('es-concierge').addEventListener('change', (e) => {
 });
 
 const DIAS_SIN_RESERVAS = ['2026-08-08'];
-const DIAS_EVENTO = ['2026-09-11'];
+const DIAS_EVENTO = ['09-11', '09-23'];
 
 document.getElementById('dia').addEventListener('change', async (e) => {
   document.querySelector('.hint-fecha').style.display = 'none';
@@ -281,7 +281,16 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   turnoSelect.disabled = false;
   btnReservar.disabled = false;
 
-  if (DIAS_EVENTO.includes(fecha)) {
+  if (DIAS_EVENTO.includes(fecha.slice(5))) {
+    const fechaEvento = new Date(fecha + 'T00:00:00');
+    const fechaEventoES = fechaEvento.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+    const fechaEventoEN = fechaEvento.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    document.querySelector('#aviso-evento h3').textContent = langActual === 'en'
+      ? 'Lucciano Event — Ibiza Port'
+      : 'Evento Lucciano — Puerto de Ibiza';
+    document.querySelector('#aviso-evento p:last-child').innerHTML = langActual === 'en'
+      ? `On ${fechaEventoEN} we're hosting the Lucciano Event at Ibiza Port. Online reservations aren't available that day — to book, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`
+      : `El ${fechaEventoES} celebramos el Evento Lucciano en el Puerto de Ibiza. Ese día las reservas online no están disponibles — para reservar, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34&nbsp;971&nbsp;191&nbsp;592</a>.`;
     avisoEvento.classList.remove('oculto');
     avisoEvento.scrollIntoView({ behavior: 'smooth', block: 'center' });
     formEl.classList.add('oculto');
