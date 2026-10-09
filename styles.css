@@ -457,7 +457,8 @@ footer .linea-dorada { margin-bottom: 1.5rem; }
 
 .aviso-temporada-info p {
   color: var(--text);
-  font-size: 0.95rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
   margin: 0;
 }
 
