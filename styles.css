@@ -446,6 +446,21 @@ footer .linea-dorada { margin-bottom: 1.5rem; }
   filter: grayscale(30%) brightness(0.85) contrast(1.05);
 }
 
+/* ── AVISO TEMPORADA (banner informativo permanente) ── */
+.aviso-temporada-info {
+  margin-top: 1.6rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid var(--gold);
+  background: var(--bg-form);
+  text-align: center;
+}
+
+.aviso-temporada-info p {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
 /* ── AVISO CIERRE ── */
 .aviso-cierre {
   margin-top: 2.8rem;

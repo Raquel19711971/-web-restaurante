@@ -3,6 +3,7 @@ const TRANSLATIONS = {
   es: {
     'pretitle':           'Bienvenidos a',
     'reserva-titulo':     'Reserva tu mesa',
+    'aviso-temporada-info': 'Último día 11 de octubre.<br>Cerramos por fin de temporada.<br>Muchas gracias a todos.',
     'aviso-tarde-h3':     'Reservas por teléfono',
     'aviso-tarde-p':      'Para reservas de hoy a partir de las 19:00 h, llámanos directamente al <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
     'aviso-cierre-h3':    '',
@@ -32,6 +33,7 @@ const TRANSLATIONS = {
     'err-telefono':       'Introduce un teléfono válido.',
     'err-personas':       'Entre 1 y 90 personas.',
     'err-dia':            'Selecciona una fecha.',
+    'err-dia-temporada':  'Cerrado por fin de temporada.',
     'err-turno':          'Selecciona un turno.',
     'err-email-req':      'Introduce tu email.',
     'err-email-inv':      'Email no válido.',
@@ -47,6 +49,7 @@ const TRANSLATIONS = {
   en: {
     'pretitle':           'Welcome to',
     'reserva-titulo':     'Book your table',
+    'aviso-temporada-info': 'Last day October 11th.<br>Closing for the end of the season.<br>Thank you all so much.',
     'aviso-tarde-h3':     'Phone reservations',
     'aviso-tarde-p':      'For reservations from 19:00 today, please call us directly at <a href="tel:+34971191592" style="color:inherit;white-space:nowrap;">+34 971 191 592</a>.',
     'aviso-cierre-h3':    '',
@@ -76,6 +79,7 @@ const TRANSLATIONS = {
     'err-telefono':       'Please enter a valid phone number.',
     'err-personas':       'Between 1 and 90 guests.',
     'err-dia':            'Please select a date.',
+    'err-dia-temporada':  'Closed for the end of the season.',
     'err-turno':          'Please select a seating time.',
     'err-email-req':      'Please enter your email.',
     'err-email-inv':      'Invalid email.',
@@ -103,7 +107,7 @@ function aplicarIdioma(lang) {
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if (key === 'aviso-tarde-p' || key === 'aviso-cierre-p') {
+    if (key === 'aviso-tarde-p' || key === 'aviso-cierre-p' || key === 'aviso-temporada-info') {
       el.innerHTML = t(key);
     } else {
       el.textContent = t(key);
@@ -171,8 +175,9 @@ document.getElementById('btn-nueva-reserva').addEventListener('click', () => {
 
 const _hoyDate = new Date();
 const hoy = `${_hoyDate.getFullYear()}-${String(_hoyDate.getMonth()+1).padStart(2,'0')}-${String(_hoyDate.getDate()).padStart(2,'0')}`;
+const FECHA_LIMITE_TEMPORADA = '2026-10-11';
 document.getElementById('dia').min = hoy;
-document.getElementById('dia').max = '';
+document.getElementById('dia').max = FECHA_LIMITE_TEMPORADA;
 
 async function getCierres() {
   try {
@@ -261,6 +266,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   const avisoEl = document.getElementById('aviso-cierre');
   const avisoSinReservas = document.getElementById('aviso-sin-reservas');
   const avisoEvento = document.getElementById('aviso-evento');
+  const avisoFinTemporada = document.getElementById('aviso-fin-temporada');
   const formEl  = document.getElementById('formulario');
   const fecha     = e.target.value;
   const avisoTarde = document.getElementById('aviso-tarde');
@@ -274,6 +280,7 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   avisoEl.classList.add('oculto');
   avisoSinReservas.classList.add('oculto');
   avisoEvento.classList.add('oculto');
+  avisoFinTemporada.classList.add('oculto');
   formEl.classList.remove('oculto');
 
   const turnoSelect = document.getElementById('turno');
@@ -281,7 +288,11 @@ document.getElementById('dia').addEventListener('change', async (e) => {
   turnoSelect.disabled = false;
   btnReservar.disabled = false;
 
-  if (DIAS_EVENTO.includes(fecha.slice(5))) {
+  if (fecha > FECHA_LIMITE_TEMPORADA) {
+    avisoFinTemporada.classList.remove('oculto');
+    avisoFinTemporada.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    formEl.classList.add('oculto');
+  } else if (DIAS_EVENTO.includes(fecha.slice(5))) {
     const fechaEvento = new Date(fecha + 'T00:00:00');
     const fechaEventoES = fechaEvento.toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
     const fechaEventoEN = fechaEvento.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
@@ -346,6 +357,7 @@ function validar() {
   if (!personas || personas < 1 || personas > 90)          { marcarError('personas', t('err-personas')); ok = false; }
   if (!dia)                                                 { marcarError('dia',      t('err-dia'));       ok = false; }
   else if (dia < hoy)                                       { marcarError('dia',      t('err-dia'));       ok = false; }
+  else if (dia > FECHA_LIMITE_TEMPORADA)                    { marcarError('dia',      t('err-dia-temporada')); ok = false; }
   if (!turno)                                               { marcarError('turno',    t('err-turno'));     ok = false; }
   if (viaConf === 'email' && !email)                        { marcarError('email',    t('err-email-req')); ok = false; }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))  { marcarError('email',    t('err-email-inv')); ok = false; }
